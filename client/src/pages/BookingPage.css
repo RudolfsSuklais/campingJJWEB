@@ -1,0 +1,344 @@
+.contact-page {
+    padding: 20px;
+}
+
+.contact-form-wrapper {
+    display: flex;
+    min-height: 90vh;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    background-color: #eee;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    flex-wrap: wrap;
+}
+
+.loading-overlay {
+    align-self: center;
+}
+
+.contact-form-left,
+.contact-form-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.contact-form-left input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.contact-form-left textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    resize: none;
+    height: 14rem;
+}
+
+.contact-form-left span {
+    color: red;
+}
+
+.contact-form-left input::placeholder {
+    color: #6d6d6d;
+}
+
+.contact-form-left label,
+.contact-form-right label {
+    font-weight: 500;
+}
+
+.contact-form-right input {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: not-allowed;
+    background-color: #eee;
+    font-weight: bold;
+}
+
+.contact-form-left-right-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 5rem;
+    flex-wrap: wrap;
+}
+
+.contact-form-btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.change-button {
+    padding: 0.3rem;
+    color: #1b1b1b;
+    border: 2px solid #1b1b1b;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.change-button:hover {
+    background-color: #1b1b1b;
+    color: #d4d4d4;
+}
+
+.contact-form-btn button,
+.success-message button {
+    padding: 10px 25px;
+    background-color: #1b1b1b;
+    color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    border: 2px solid transparent;
+    letter-spacing: 1px;
+}
+
+.contact-form-btn button:hover,
+.success-message button:hover {
+    background-color: #d4d4d4;
+    border: 2px solid #1b1b1b;
+    color: #1b1b1b;
+}
+
+.contact-form-message p {
+    text-align: center;
+}
+
+.contact-form-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 auto;
+}
+
+.contact-form-message label {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.contact-form-message label span {
+    color: red;
+}
+
+input[type="date"] {
+    cursor: pointer;
+}
+
+.contact-form-message textarea {
+    width: 100%;
+    height: 200px;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    resize: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .contact-form-left-right-wrapper {
+        flex-direction: column;
+        justify-content: center;
+        align-self: center;
+    }
+
+    .contact-form-message textarea {
+        width: 100%;
+    }
+}
+
+@media (max-width: 568px) {
+    .contact-form-message p {
+        font-size: 15px;
+    }
+}
+
+.success-message {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.change-dates-area-btn {
+    padding: 5px 10px;
+    border: 2px solid #1b1b1b;
+    border-radius: 6px;
+    background-color: transparent;
+    color: #1b1b1b;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.change-dates-area-btn:hover {
+    background-color: #1b1b1b;
+    color: #d4d4d4;
+}
+
+.type-of-payment {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px; /* Add spacing between radio buttons */
+}
+
+.type-of-payment input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    appearance: none; /* Remove default styles */
+    background-color: #d4d4d4;
+    border: 2px solid #1b1b1b;
+    border-radius: 50%; /* Make it circular */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+}
+
+.type-of-payment input[type="radio"]:checked {
+    background-color: #ccc;
+    border-color: #1b1b1b;
+}
+
+.type-of-payment input[type="radio"]:checked::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: #1b1b1b;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.type-of-payment-radio {
+    display: flex;
+    gap: 20px;
+}
+
+.type-of-payment-radio label {
+    font-weight: 600;
+}
+
+.contact-form-left .input-container {
+    position: relative;
+    width: 100%; /* Adjust as needed */
+    margin-bottom: 1rem; /* Add spacing between input fields */
+}
+
+.contact-form-left input[type="text"],
+.contact-form-left input[type="tel"],
+.contact-form-left input[type="email"] {
+    width: 100%;
+    height: 3rem;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    padding-top: 17px;
+}
+
+.contact-form-left input[type="text"]:focus,
+.contact-form-left input[type="tel"]:focus,
+.contact-form-left input[type="email"]:focus {
+    border-color: #1b1b1b; /* Change to your preferred focus color */
+}
+
+.contact-form-left .floating-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #777;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.contact-form-left input[type="text"]:focus + .floating-placeholder,
+.contact-form-left
+    input[type="text"]:not(:placeholder-shown)
+    + .floating-placeholder,
+.contact-form-left input[type="tel"]:focus + .floating-placeholder,
+.contact-form-left
+    input[type="tel"]:not(:placeholder-shown)
+    + .floating-placeholder,
+.contact-form-left input[type="email"]:focus + .floating-placeholder,
+.contact-form-left
+    input[type="email"]:not(:placeholder-shown)
+    + .floating-placeholder {
+    top: 11px;
+    left: 5px;
+    font-size: 12px;
+    color: #777; /* Change to your preferred color */
+    background: transparent; /* Ensure the placeholder text is visible */
+    padding: 5px;
+}
+
+.contact-form-left textarea {
+    width: 100%;
+    height: 14rem; /* Adjust height as needed */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    resize: none; /* Prevent resizing */
+    padding-top: 20px; /* Add padding to align text with floating placeholder */
+}
+
+.contact-form-left textarea:focus {
+    border-color: #1b1b1b; /* Change to your preferred focus color */
+}
+
+.contact-form-left .floating-placeholder-textarea {
+    position: absolute;
+    top: 10px; /* Align with the top padding of the textarea */
+    left: 10px; /* Align with the left padding of the textarea */
+    font-size: 14px;
+    color: #777;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.contact-form-left textarea:focus + .floating-placeholder-textarea,
+.contact-form-left
+    textarea:not(:placeholder-shown)
+    + .floating-placeholder-textarea {
+    top: 0px; /* Slightly move up when focused or has content */
+    left: 5px;
+    font-size: 12px;
+    color: #777; /* Change to your preferred color */
+    background: transparent; /* Ensure the placeholder text is visible */
+    padding: 5px;
+}

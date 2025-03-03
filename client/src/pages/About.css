@@ -1,0 +1,252 @@
+/* About Page Styling */
+.aboutPage {
+    font-family: "Arial", sans-serif;
+    color: #1b1b1b;
+    background-color: #f9f9f9;
+}
+
+/* Hero Section */
+.aboutHero {
+    background-image: url("https://images.unsplash.com/photo-1465865523598-a834aac5d3fa?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVhY2glMjBjYW1waW5nfGVufDB8fDB8fHww"); /* Add a background image */
+    background-size: cover;
+    background-position: center;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 0 2rem;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+.aboutHero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3));
+}
+
+.aboutHero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
+    animation: fadeInDown 1.5s ease-in-out;
+}
+
+.aboutHero p {
+    font-size: 1.25rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 1.5s ease-in-out;
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mission Section */
+.aboutMission {
+    padding: 4rem 1rem;
+    background: linear-gradient(135deg, #1b1b1b, #333);
+    text-align: center;
+    color: #fff;
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+}
+
+.aboutMission h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.aboutMission p {
+    font-size: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+    color: #d4d4d4;
+}
+
+/* Sustainability Section */
+.aboutSustainability {
+    padding: 5rem 1rem;
+    background-color: #fff;
+    text-align: center;
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%);
+}
+
+.aboutSustainability h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #1b1b1b;
+}
+
+.aboutSustainability p {
+    font-size: 1rem;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+.sustainabilityFeatures {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.featureCard {
+    background-color: #1b1b1b;
+    border-radius: 15px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: linear-gradient(135deg, #1b1b1b, #333);
+    color: #fff;
+}
+
+.featureCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.featureCard h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.featureCard p {
+    font-size: 0.9rem;
+    color: #cdcdcd;
+}
+
+/* Call-to-Action Section */
+.aboutCTA {
+    padding: 4rem 1rem;
+    background: linear-gradient(135deg, #1b1b1b, #333);
+    color: #fff;
+    text-align: center;
+    clip-path: polygon(0 0, 100% 10%, 100% 100%, 0 90%);
+}
+
+.aboutCTA h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.aboutCTA p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.aboutCTA button {
+    background-color: #fff;
+    color: #1b1b1b;
+    border: none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.aboutCTA button:hover {
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .aboutHero {
+        height: 70vh;
+    }
+
+    .aboutHero h1 {
+        font-size: 4rem;
+    }
+
+    .aboutHero p {
+        font-size: 1.5rem;
+    }
+
+    .aboutMission {
+        padding: 6rem 2rem;
+    }
+
+    .aboutMission h2 {
+        font-size: 2.5rem;
+    }
+
+    .aboutMission p {
+        font-size: 1.1rem;
+    }
+
+    .aboutSustainability {
+        padding: 6rem 2rem;
+    }
+
+    .aboutSustainability h2 {
+        font-size: 2.5rem;
+    }
+
+    .aboutSustainability p {
+        font-size: 1.1rem;
+    }
+
+    .sustainabilityFeatures {
+        flex-direction: row;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    .featureCard {
+        width: 300px;
+    }
+
+    .aboutCTA {
+        padding: 6rem 2rem;
+    }
+
+    .aboutCTA h2 {
+        font-size: 2.5rem;
+    }
+
+    .aboutCTA p {
+        font-size: 1.1rem;
+    }
+}

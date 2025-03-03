@@ -1,0 +1,159 @@
+/* Pricing Page Container */
+.pricingPage {
+    padding: 4rem 2rem;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* Pricing Calculator Section */
+.pricingPageCalc {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 60px;
+}
+
+.pricingCard {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 500px;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.3s;
+}
+
+.pricingCard h2 {
+    font-size: 2.5rem;
+    color: #1b1b1b;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.amountWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.amountWrapper h4 {
+    font-size: 1.2rem;
+    color: #1b1b1b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.amountWrapper h4 i {
+    font-size: 1.5rem;
+    color: #1b1b1b;
+}
+
+.amount {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.amount button {
+    background-color: #1b1b1b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.amount button:hover {
+    background-color: #6d6d6d;
+}
+
+.amount p {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1b1b1b;
+    width: 20px;
+}
+
+.amountWrapper input[type="checkbox"] {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    appearance: none;
+    background-color: #ddd;
+    border: 2px solid #1b1b1b;
+    border-radius: 4px;
+    margin-right: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.amountWrapper input[type="checkbox"]:checked {
+    background-color: #1b1b1b;
+    border-color: #1b1b1b;
+    position: relative;
+}
+
+.amountWrapper input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+}
+
+.totalPrice {
+    margin-top: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1b1b1b;
+    text-align: center;
+    background-color: #ddd;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.totalPrice span {
+    color: #1b1b1b;
+    font-weight: 800;
+}
+
+.pricingPageBtn {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.pricingPageBtn button {
+    padding: 1rem 2rem;
+    background-color: #1b1b1b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pricingPageBtn button:hover {
+    background-color: #6d6d6d;
+    transform: translateY(-3px);
+}
+
+.selectedAreaText {
+    font-size: 20px;
+}
