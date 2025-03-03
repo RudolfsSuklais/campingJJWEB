@@ -28,7 +28,7 @@ const MapSelect = () => {
         const fetchAreas = async () => {
             try {
                 const response = await fetch(
-                    `${process.env.VITE_BACKEND_URL}/api/areas`
+                    `${import.meta.env.VITE_BACKEND_URL}/api/areas`
                 );
                 const data = await response.json();
                 // Sort areas by id or any other property
@@ -56,7 +56,9 @@ const MapSelect = () => {
                 setError("");
                 try {
                     const response = await fetch(
-                        `${process.env.VITE_BACKEND_URL}/api/confirmed-reservations?startDateTime=${startDateTime}&endDateTime=${endDateTime}`
+                        `${
+                            import.meta.env.VITE_BACKEND_URL
+                        }/api/confirmed-reservations?startDateTime=${startDateTime}&endDateTime=${endDateTime}`
                     );
 
                     if (!response.ok) {

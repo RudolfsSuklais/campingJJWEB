@@ -10,7 +10,7 @@ const LoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         const response = await fetch(
-            `${process.env.VITE_BACKEND_URL}/api/login`,
+            `${import.meta.env.VITE_BACKEND_URL}/api/login`,
             {
                 method: "POST",
                 body: JSON.stringify({ username, password }),

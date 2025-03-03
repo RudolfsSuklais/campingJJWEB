@@ -227,7 +227,7 @@ function BookingPage() {
             };
 
             const response = await fetch(
-                `${process.env.VITE_BACKEND_URL}/send-email`,
+                `${import.meta.env.VITE_BACKEND_URL}/send-email`,
                 {
                     method: "POST",
                     headers: {
