@@ -18,7 +18,7 @@ const AdminDashboard = () => {
         const fetchTemporaryReservations = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/temp-reservations"
+                    `${process.env.VITE_BACKEND_URL}/api/temp-reservations`
                 );
                 const data = await response.json();
                 console.log("Fetched temporary reservations:", data);
@@ -31,7 +31,7 @@ const AdminDashboard = () => {
         const fetchConfirmedReservations = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/reservations-confirmed"
+                    `${process.env.VITE_BACKEND_URL}/api/reservations-confirmed`
                 );
                 const data = await response.json();
                 console.log("Fetched confirmed reservations:", data);
@@ -44,7 +44,7 @@ const AdminDashboard = () => {
         const fetchArchivedReservations = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:5000/api/archived-reservations"
+                    `${process.env.VITE_BACKEND_URL}/api/archived-reservations`
                 );
                 const data = await response.json();
                 console.log("Fetched archived reservations:", data);
@@ -104,7 +104,7 @@ const AdminDashboard = () => {
 
             // Step 1: Confirm the reservation
             const confirmResponse = await fetch(
-                `http://localhost:5000/api/confirm-reservation/${id}`,
+                `${process.env.VITE_BACKEND_URL}/api/confirm-reservation/${id}`,
                 { method: "POST" }
             );
 
@@ -114,7 +114,7 @@ const AdminDashboard = () => {
 
             // Step 2: Fetch the confirmed reservation to check the payment type
             const confirmedReservationResponse = await fetch(
-                `http://localhost:5000/api/confirmed-reservations/${id}`
+                `${process.env.VITE_BACKEND_URL}/api/confirmed-reservations/${id}`
             );
             const confirmedReservationData =
                 await confirmedReservationResponse.json();
@@ -129,7 +129,7 @@ const AdminDashboard = () => {
             if (confirmedReservationData.paymentType === "invoice") {
                 console.log("Sending PDF for reservation with ID:", id);
                 const pdfResponse = await fetch(
-                    `http://localhost:5000/api/send-pdf/${id}`,
+                    `${process.env.VITE_BACKEND_URL}/api/send-pdf/${id}`,
                     { method: "POST" }
                 );
 
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
             if (confirmedReservationData.paymentType === "legalEntity") {
                 console.log("Sending PDF for reservation with ID:", id);
                 const pdfResponse = await fetch(
-                    `http://localhost:5000/api/send-pdf-legal/${id}`,
+                    `${process.env.VITE_BACKEND_URL}/api/send-pdf-legal/${id}`,
                     { method: "POST" }
                 );
 
@@ -152,7 +152,7 @@ const AdminDashboard = () => {
 
             // Step 4: Update the state
             const confirmedReservationsResponse = await fetch(
-                "http://localhost:5000/api/reservations-confirmed"
+                `${process.env.VITE_BACKEND_URL}/api/reservations-confirmed`
             );
             const confirmedReservationsData =
                 await confirmedReservationsResponse.json();
@@ -177,13 +177,13 @@ const AdminDashboard = () => {
             // Set loading state for this reservation
             setLoadingReservations((prev) => ({ ...prev, [id]: true }));
             const sendEmailResponse = await fetch(
-                `http://localhost:5000/api/send-decline-email/${id}`,
+                `${process.env.VITE_BACKEND_URL}/api/send-decline-email/${id}`,
                 { method: "POST" }
             );
 
             // Delete the reservation from the temporary reservations list
             const deleteResponse = await fetch(
-                `http://localhost:5000/api/delete-temp-reservation/${id}`,
+                `${process.env.VITE_BACKEND_URL}/api/delete-temp-reservation/${id}`,
                 { method: "DELETE" }
             );
 

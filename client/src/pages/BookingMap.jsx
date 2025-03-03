@@ -27,7 +27,9 @@ const MapSelect = () => {
     useEffect(() => {
         const fetchAreas = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/areas");
+                const response = await fetch(
+                    `${process.env.VITE_BACKEND_URL}/api/areas`
+                );
                 const data = await response.json();
                 // Sort areas by id or any other property
                 const sortedAreas = data.sort((a, b) => a.id - b.id);
@@ -54,7 +56,7 @@ const MapSelect = () => {
                 setError("");
                 try {
                     const response = await fetch(
-                        `http://localhost:5000/api/confirmed-reservations?startDateTime=${startDateTime}&endDateTime=${endDateTime}`
+                        `${process.env.VITE_BACKEND_URL}/api/confirmed-reservations?startDateTime=${startDateTime}&endDateTime=${endDateTime}`
                     );
 
                     if (!response.ok) {
