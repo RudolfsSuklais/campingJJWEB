@@ -147,6 +147,11 @@ const MapSelect = () => {
                                                 dayjs(endDateTime).endOf("day"))
                                     }
                                     allowClear={false}
+                                    inputReadOnly={true} // Prevent keyboard from opening
+                                    popupStyle={{
+                                        width: "90%",
+                                        maxWidth: "300px",
+                                    }} // Adjust size for mobile
                                 />
                             </label>
                             <label>
@@ -175,6 +180,11 @@ const MapSelect = () => {
                                                 ))
                                     }
                                     allowClear={false}
+                                    inputReadOnly={true} // Prevent keyboard from opening
+                                    popupStyle={{
+                                        width: "90%",
+                                        maxWidth: "300px",
+                                    }} // Adjust size for mobile
                                 />
                             </label>
                             <button onClick={closeDateModal}>Close</button>
