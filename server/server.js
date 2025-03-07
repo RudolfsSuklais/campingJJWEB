@@ -28,6 +28,16 @@ app.use(cors());
 app.use(express.json());
 app.use("/api", areaRoutes);
 
+// Serve static files from the React app
+const __filenamee = fileURLToPath(import.meta.url);
+const __dirnamee = path.dirname(__filenamee);
+app.use(express.static(path.join(__dirnamee, "..", "client", "dist")));
+
+// Handle client-side routing
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirnamee, "..", "client", "dist", "index.html"));
+});
+
 // Function to delete expired reservations
 
 const moveToArchive = async () => {
