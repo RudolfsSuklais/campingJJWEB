@@ -21,7 +21,6 @@ const MapSelect = () => {
     const [error, setError] = useState("");
     const [isError, setIsError] = useState(false);
     const [errorCooldown, setErrorCooldown] = useState(false);
-    const [isDateModalOpen, setIsDateModalOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -109,88 +108,57 @@ const MapSelect = () => {
         navigate("/booking");
     };
 
-    const openDateModal = () => setIsDateModalOpen(true);
-    const closeDateModal = () => setIsDateModalOpen(false);
-
     return (
         <div className="campsite-map-container">
             <h2>Select a Campsite Area</h2>
             <div className="date-selection">
-                <button onClick={openDateModal} className="mobile-date-button">
-                    Select Dates
-                </button>
-                {isDateModalOpen && (
-                    <div className="date-modal">
-                        <div className="date-modal-content">
-                            <label>
-                                Arrival Date and Time:
-                                <DatePicker
-                                    format={dateTimeFormat}
-                                    showTime={{ format: "HH", hourStep: 1 }}
-                                    value={
-                                        startDateTime
-                                            ? dayjs(startDateTime)
-                                            : null
-                                    }
-                                    onChange={(date, dateString) => {
-                                        const isoDate = dayjs(
-                                            dateString,
-                                            dateTimeFormat
-                                        ).toISOString();
-                                        setStartDateTime(isoDate);
-                                    }}
-                                    disabledDate={(current) =>
-                                        (current &&
-                                            current < dayjs().startOf("day")) ||
-                                        (endDateTime &&
-                                            current >=
-                                                dayjs(endDateTime).endOf("day"))
-                                    }
-                                    allowClear={false}
-                                    inputReadOnly={true} // Prevent keyboard from opening
-                                    popupStyle={{
-                                        width: "90%",
-                                        maxWidth: "300px",
-                                    }} // Adjust size for mobile
-                                />
-                            </label>
-                            <label>
-                                Departure Date and Time:
-                                <DatePicker
-                                    format={dateTimeFormat}
-                                    showTime={{ format: "HH", hourStep: 1 }}
-                                    value={
-                                        endDateTime ? dayjs(endDateTime) : null
-                                    }
-                                    onChange={(date, dateString) => {
-                                        const isoDate = dayjs(
-                                            dateString,
-                                            dateTimeFormat
-                                        ).toISOString();
-                                        setEndDateTime(isoDate);
-                                    }}
-                                    disabledDate={(current) =>
-                                        (current &&
-                                            current < dayjs().startOf("day")) ||
-                                        (current &&
-                                            startDateTime &&
-                                            current <=
-                                                dayjs(startDateTime).endOf(
-                                                    "day"
-                                                ))
-                                    }
-                                    allowClear={false}
-                                    inputReadOnly={true} // Prevent keyboard from opening
-                                    popupStyle={{
-                                        width: "90%",
-                                        maxWidth: "300px",
-                                    }} // Adjust size for mobile
-                                />
-                            </label>
-                            <button onClick={closeDateModal}>Close</button>
-                        </div>
-                    </div>
-                )}
+                <label>
+                    Arrival Date and Time:
+                    <DatePicker
+                        format={dateTimeFormat}
+                        showTime={{ format: "HH", hourStep: 1 }}
+                        value={startDateTime ? dayjs(startDateTime) : null}
+                        onChange={(date, dateString) => {
+                            const isoDate = dayjs(
+                                dateString,
+                                dateTimeFormat
+                            ).toISOString();
+                            setStartDateTime(isoDate);
+                        }}
+                        disabledDate={(current) =>
+                            (current && current < dayjs().startOf("day")) ||
+                            (endDateTime &&
+                                current >= dayjs(endDateTime).endOf("day"))
+                        }
+                        allowClear={false}
+                        inputReadOnly={true} // Prevent keyboard from opening
+                        popupStyle={{ width: "90%", maxWidth: "300px" }} // Adjust size for mobile
+                    />
+                </label>
+                <label>
+                    Departure Date and Time:
+                    <DatePicker
+                        format={dateTimeFormat}
+                        showTime={{ format: "HH", hourStep: 1 }}
+                        value={endDateTime ? dayjs(endDateTime) : null}
+                        onChange={(date, dateString) => {
+                            const isoDate = dayjs(
+                                dateString,
+                                dateTimeFormat
+                            ).toISOString();
+                            setEndDateTime(isoDate);
+                        }}
+                        disabledDate={(current) =>
+                            (current && current < dayjs().startOf("day")) ||
+                            (current &&
+                                startDateTime &&
+                                current <= dayjs(startDateTime).endOf("day"))
+                        }
+                        allowClear={false}
+                        inputReadOnly={true} // Prevent keyboard from opening
+                        popupStyle={{ width: "90%", maxWidth: "300px" }} // Adjust size for mobile
+                    />
+                </label>
             </div>
             {loading && <p>Loading availability...</p>}
             {error && <p className="error">{error}</p>}
