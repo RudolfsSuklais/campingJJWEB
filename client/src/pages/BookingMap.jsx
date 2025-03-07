@@ -24,6 +24,26 @@ const MapSelect = () => {
 
     const navigate = useNavigate();
 
+    // Disable scrolling when DatePicker is open
+    useEffect(() => {
+        const handleScroll = (e) => {
+            const datePickerDropdown = document.querySelector(
+                ".ant-picker-dropdown"
+            );
+            if (
+                datePickerDropdown &&
+                datePickerDropdown.style.display !== "none"
+            ) {
+                e.preventDefault();
+                window.scrollTo(0, 0);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: false });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    // Fetch areas
     useEffect(() => {
         const fetchAreas = async () => {
             try {
@@ -40,12 +60,14 @@ const MapSelect = () => {
         fetchAreas();
     }, []);
 
+    // Handle errors
     useEffect(() => {
         if (isError) {
             setTimeout(() => setIsError(false), 3000);
         }
     }, [isError]);
 
+    // Fetch confirmed reservations
     useEffect(() => {
         if (startDateTime && endDateTime) {
             const fetchConfirmedReservations = async () => {
@@ -72,6 +94,7 @@ const MapSelect = () => {
         }
     }, [startDateTime, endDateTime]);
 
+    // Check if an area is available
     const isAreaAvailable = (areaId) => {
         if (!startDateTime || !endDateTime) return true;
         const selectedStart = dayjs(startDateTime);
@@ -87,6 +110,7 @@ const MapSelect = () => {
         });
     };
 
+    // Handle area click
     const handleAreaClick = (areaId) => {
         if (!startDateTime || !endDateTime) {
             if (!errorCooldown) {
