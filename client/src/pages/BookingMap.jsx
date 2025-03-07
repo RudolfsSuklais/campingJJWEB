@@ -181,6 +181,7 @@ const MapSelect = () => {
                         allowClear={false}
                         inputReadOnly={true} // Prevent keyboard from opening
                         popupStyle={{ width: "90%", maxWidth: "300px" }} // Adjust size for mobile
+                        placement="bottomLeft" // Force the dropdown to open below the input
                     />
                 </label>
             </div>

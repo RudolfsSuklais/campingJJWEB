@@ -157,3 +157,8 @@
         max-width: 100%;
     }
 }
+
+/* Disable scrolling when DatePicker is open */
+body.no-scroll {
+    overflow: hidden;
+}
