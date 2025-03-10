@@ -250,7 +250,7 @@ const AdminDashboard = () => {
 
     // Columns for Temporary Reservations (includes Confirm button)
     const tempReservationsColumns = [
-        { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
+        { field: "name", headerName: "Name", flex: 1, minWidth: 100 },
         { field: "email", headerName: "Email", flex: 1, minWidth: 150 },
         { field: "phone", headerName: "Phone", flex: 1, minWidth: 120 },
         {
@@ -374,12 +374,13 @@ const AdminDashboard = () => {
                             )
                         )}
                         columns={tempReservationsColumns}
-                        pageSize={5}
+                        autoPageSize // Automatically adjust page size
                         rowsPerPageOptions={[5, 10, 20]}
                         getRowId={(row) => row._id}
                         disableSelectionOnClick
-                        autoHeight
                         sx={{
+                            height: "100%", // Use full height of the container
+                            width: "100%",
                             "& .MuiDataGrid-cell": {
                                 fontSize: "0.875rem", // Smaller font size for mobile
                             },
