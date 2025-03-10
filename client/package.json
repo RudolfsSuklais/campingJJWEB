@@ -20,6 +20,8 @@
         "@mui/material": "^6.4.4",
         "@mui/x-data-grid": "^7.26.0",
         "@mui/x-date-pickers": "^7.26.0",
+        "ag-grid-community": "^33.1.1",
+        "ag-grid-react": "^33.1.1",
         "antd": "^5.24.1",
         "axios": "^1.7.9",
         "bootstrap": "^5.3.3",
