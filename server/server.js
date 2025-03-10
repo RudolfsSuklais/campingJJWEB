@@ -14,31 +14,44 @@ import ConfirmedReservation from "./models/confirmedReservations.js";
 import cron from "node-cron"; // Import node-cron
 import dayjs from "dayjs";
 import archivedReservation from "./models/archivedReservations.js"; // Your archive model
+
 dotenv.config();
 
+// MongoDB connection
 const mongoURI = process.env.MONGO_URI;
-
 mongoose
     .connect(mongoURI)
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
+// Initialize Express app
 const app = express();
-app.use(cors());
+
+// CORS configuration
+app.use(
+    cors({
+        origin: (origin, callback) => {
+            const allowedOrigins = [
+                "http://localhost:5173",
+                "https://campingjjweb-2.onrender.com",
+            ];
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true); // Allow the request
+            } else {
+                callback(new Error("Not allowed by CORS")); // Block the request
+            }
+        },
+        credentials: true, // Allow cookies and credentials
+    })
+);
+
+// Parse JSON requests
 app.use(express.json());
+
+// API routes
 app.use("/api", areaRoutes);
 
-// Serve static files from the React app
-const __filenamee = fileURLToPath(import.meta.url);
-const __dirnamee = path.dirname(__filenamee);
-app.use(express.static(path.join(__dirnamee, "..", "client", "dist")));
-
-// Handle client-side routing
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirnamee, "..", "client", "dist", "index.html"));
-});
-
-// Function to delete expired reservations
+// Serve static files from the React app's dist folder
 
 const moveToArchive = async () => {
     try {
@@ -78,7 +91,7 @@ const moveToArchive = async () => {
 };
 
 // Schedule the task to run every 10 minutes
-cron.schedule("*/1 * * * *", () => {
+cron.schedule("*/10 * * * *", () => {
     console.log("Running scheduled task to archive expired reservations...");
     moveToArchive();
 });
@@ -1114,6 +1127,7 @@ app.post("/send-email", async (req, res) => {
                 Additional Firewood: ${additionalFirewood}
                 Total Price: ${totalPrice}€
                 Message: ${message}
+                Selected Area: ${selectedArea}
             `,
         };
 
@@ -1127,8 +1141,12 @@ app.post("/send-email", async (req, res) => {
                 We have received your request and will get back to you shortly.</p>
                 <h3>Booking Details:</h3>
                 <ul>
-                    <li><b>Start Date:</b> ${startDateTime}</li>
-                    <li><b>End Date:</b> ${endDateTime}</li>
+                    <li><b>Start Date:</b> ${formatDateForDisplay(
+                        startDateTime
+                    )}</li>
+                    <li><b>End Date:</b> ${formatDateForDisplay(
+                        endDateTime
+                    )}</li>
                     <li><b>Total Price:</b> ${totalPrice}€</li>
                 </ul>
                 <p>If you have any questions, feel free to reply to this email.</p>
@@ -1156,6 +1174,17 @@ app.post("/send-email", async (req, res) => {
         console.error("Error processing reservation:", error);
         res.status(500).json({ error: "Failed to process reservation" });
     }
+});
+
+const __filenamee = fileURLToPath(import.meta.url); // Get the current file path
+const __dirnamee = path.dirname(__filenamee); // Get the current directory path
+const clientDistPath = path.join(__dirnamee, "..", "client", "dist"); // Path to the React app's dist folder
+
+app.use(express.static(clientDistPath)); // Serve static files
+
+// Handle client-side routing (fallback for React app)
+app.get("*", (req, res) => {
+    res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
 const PORT = process.env.PORT || 5000;

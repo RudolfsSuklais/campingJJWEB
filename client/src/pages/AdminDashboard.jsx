@@ -43,6 +43,8 @@ const AdminDashboard = () => {
             }
         };
 
+        console.log(import.meta.env.VITE_BACKEND_URL);
+
         const fetchArchivedReservations = async () => {
             try {
                 const response = await fetch(

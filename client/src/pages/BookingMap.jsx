@@ -24,25 +24,6 @@ const MapSelect = () => {
 
     const navigate = useNavigate();
 
-    // Disable scrolling when DatePicker is open
-    useEffect(() => {
-        const handleScroll = (e) => {
-            const datePickerDropdown = document.querySelector(
-                ".ant-picker-dropdown"
-            );
-            if (
-                datePickerDropdown &&
-                datePickerDropdown.style.display !== "none"
-            ) {
-                e.preventDefault();
-                window.scrollTo(0, 0);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll, { passive: false });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
     // Fetch areas
     useEffect(() => {
         const fetchAreas = async () => {
