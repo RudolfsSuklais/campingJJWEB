@@ -378,6 +378,8 @@ const AdminDashboard = () => {
                         rowsPerPageOptions={[5, 10, 20]}
                         getRowId={(row) => row._id}
                         disableSelectionOnClick
+                        disableColumnReorder // Disable column reordering
+                        disableColumnResize // Disable column resizing
                         sx={{
                             height: "100%", // Use full height of the container
                             width: "100%",
