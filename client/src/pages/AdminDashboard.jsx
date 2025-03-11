@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import "./AdminDashboard.css";
 import { Tabs, Spin } from "antd";
 import toast from "react-hot-toast";
+import { AgGridReact } from "ag-grid-react";
+import { ClientSideRowModelModule } from "ag-grid-community"; // Import the required module
+import { ModuleRegistry } from "ag-grid-community"; // Import ModuleRegistry
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+
+// Register the required modules
+ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -43,8 +50,6 @@ const AdminDashboard = () => {
             }
         };
 
-        console.log(import.meta.env.VITE_BACKEND_URL);
-
         const fetchArchivedReservations = async () => {
             try {
                 const response = await fetch(
@@ -70,23 +75,23 @@ const AdminDashboard = () => {
         const newEnd = new Date(newReservation.endDateTime);
 
         return confirmedReservations.some((res) => {
-            const existingStart = new Date(res.startDateTime);
-            const existingEnd = new Date(res.endDateTime);
+            if (res.selectedArea === newReservation.selectedArea) {
+                const existingStart = new Date(res.startDateTime);
+                const existingEnd = new Date(res.endDateTime);
 
-            return (
-                (newStart >= existingStart && newStart < existingEnd) ||
-                (newEnd > existingStart && newEnd <= existingEnd) ||
-                (newStart <= existingStart && newEnd >= existingEnd)
-            );
+                return (
+                    (newStart >= existingStart && newStart < existingEnd) ||
+                    (newEnd > existingStart && newEnd <= existingEnd) ||
+                    (newStart <= existingStart && newEnd >= existingEnd)
+                );
+            }
+            return false;
         });
     };
 
     const handleConfirm = async (id) => {
         try {
-            // Set loading state for this reservation
             setLoadingReservations((prev) => ({ ...prev, [id]: true }));
-
-            // Find the reservation to confirm
             const reservationToConfirm = tempReservations.find(
                 (res) => res._id === id
             );
@@ -95,7 +100,6 @@ const AdminDashboard = () => {
                 throw new Error("Reservation not found.");
             }
 
-            // Check for overlapping dates
             const isOverlap = checkForOverlap(
                 reservationToConfirm,
                 confirmedReservations
@@ -103,12 +107,11 @@ const AdminDashboard = () => {
 
             if (isOverlap) {
                 toast.error(
-                    "This reservation overlaps with an existing confirmed reservation."
+                    "This reservation overlaps with an existing confirmed reservation for the same area."
                 );
                 return;
             }
 
-            // Step 1: Confirm the reservation
             const confirmResponse = await fetch(
                 `${
                     import.meta.env.VITE_BACKEND_URL
@@ -120,7 +123,6 @@ const AdminDashboard = () => {
                 throw new Error("Failed to confirm reservation.");
             }
 
-            // Step 2: Fetch the confirmed reservation to check the payment type
             const confirmedReservationResponse = await fetch(
                 `${
                     import.meta.env.VITE_BACKEND_URL
@@ -133,11 +135,7 @@ const AdminDashboard = () => {
                 throw new Error("Confirmed reservation not found.");
             }
 
-            console.log("payment type: ", confirmedReservationData.paymentType);
-
-            // Step 3: If payment type is "invoice", send the PDF
             if (confirmedReservationData.paymentType === "invoice") {
-                console.log("Sending PDF for reservation with ID:", id);
                 const pdfResponse = await fetch(
                     `${import.meta.env.VITE_BACKEND_URL}/api/send-pdf/${id}`,
                     { method: "POST" }
@@ -149,7 +147,6 @@ const AdminDashboard = () => {
             }
 
             if (confirmedReservationData.paymentType === "legalEntity") {
-                console.log("Sending PDF for reservation with ID:", id);
                 const pdfResponse = await fetch(
                     `${
                         import.meta.env.VITE_BACKEND_URL
@@ -162,7 +159,6 @@ const AdminDashboard = () => {
                 }
             }
 
-            // Step 4: Update the state
             const confirmedReservationsResponse = await fetch(
                 `${import.meta.env.VITE_BACKEND_URL}/api/reservations-confirmed`
             );
@@ -170,7 +166,6 @@ const AdminDashboard = () => {
                 await confirmedReservationsResponse.json();
             setConfirmedReservations(confirmedReservationsData);
 
-            // Step 5: Remove the reservation from the temporary reservations list
             setTempReservations((prevReservations) =>
                 prevReservations.filter((res) => res._id !== id)
             );
@@ -179,14 +174,12 @@ const AdminDashboard = () => {
             console.error("Error confirming reservation:", error);
             toast.error("An error occurred while confirming the reservation.");
         } finally {
-            // Reset loading state for this reservation
             setLoadingReservations((prev) => ({ ...prev, [id]: false }));
         }
     };
 
     const handleDecline = async (id) => {
         try {
-            // Set loading state for this reservation
             setLoadingReservations((prev) => ({ ...prev, [id]: true }));
             const sendEmailResponse = await fetch(
                 `${
@@ -195,7 +188,6 @@ const AdminDashboard = () => {
                 { method: "POST" }
             );
 
-            // Delete the reservation from the temporary reservations list
             const deleteResponse = await fetch(
                 `${
                     import.meta.env.VITE_BACKEND_URL
@@ -207,7 +199,6 @@ const AdminDashboard = () => {
                 throw new Error("Failed to delete reservation.");
             }
 
-            // Update the state
             setTempReservations((prevReservations) =>
                 prevReservations.filter((res) => res._id !== id)
             );
@@ -217,7 +208,6 @@ const AdminDashboard = () => {
             console.error("Error declining reservation:", error);
             toast.error("An error occurred while declining the reservation.");
         } finally {
-            // Reset loading state for this reservation
             setLoadingReservations((prev) => ({ ...prev, [id]: false }));
         }
     };
@@ -228,11 +218,10 @@ const AdminDashboard = () => {
     };
 
     const formatDateForDisplay = (isoDate) => {
-        if (!isoDate) return "N/A"; // Handle missing or invalid dates
+        if (!isoDate) return "N/A";
         return dayjs(isoDate).format("DD/MM/YYYY HH:mm");
     };
 
-    // Format the dates in the data before passing it to the DataGrid
     const formatReservations = (reservations) => {
         return reservations.map((res) => ({
             ...res,
@@ -248,36 +237,19 @@ const AdminDashboard = () => {
     const formattedArchivedReservations =
         formatReservations(archivedReservations);
 
-    // Columns for Temporary Reservations (includes Confirm button)
+    // AG Grid Column Definitions
     const tempReservationsColumns = [
-        { field: "name", headerName: "Name", flex: 1, minWidth: 100 },
-        { field: "email", headerName: "Email", flex: 1, minWidth: 150 },
-        { field: "phone", headerName: "Phone", flex: 1, minWidth: 120 },
-        {
-            field: "startDateTime",
-            headerName: "Start Date",
-            flex: 1,
-            minWidth: 150,
-        },
-        {
-            field: "endDateTime",
-            headerName: "End Date",
-            flex: 1,
-            minWidth: 150,
-        },
-        {
-            field: "totalPrice",
-            headerName: "Total Price (€)",
-            flex: 1,
-            minWidth: 120,
-        },
+        { field: "name", headerName: "Name", flex: 1 },
+        { field: "email", headerName: "Email", flex: 1 },
+        { field: "phone", headerName: "Phone", flex: 1 },
+        { field: "startDateTime", headerName: "Start Date", flex: 1 },
+        { field: "endDateTime", headerName: "End Date", flex: 1 },
+        { field: "totalPrice", headerName: "Total Price (€)", flex: 1 },
         {
             field: "actions",
             headerName: "Actions",
-            flex: 1,
-            minWidth: 120,
-            renderCell: (params) => {
-                const isLoading = loadingReservations[params.row._id] || false;
+            cellRenderer: (params) => {
+                const isLoading = loadingReservations[params.data._id] || false;
 
                 return isLoading ? (
                     <Spin size="small" />
@@ -285,13 +257,13 @@ const AdminDashboard = () => {
                     <>
                         <button
                             className="confirm-button"
-                            onClick={() => handleConfirm(params.row._id)}
+                            onClick={() => handleConfirm(params.data._id)}
                         >
                             Confirm
                         </button>
                         <button
                             className="decline-button"
-                            onClick={() => handleDecline(params.row._id)}
+                            onClick={() => handleDecline(params.data._id)}
                         >
                             Decline
                         </button>
@@ -301,53 +273,22 @@ const AdminDashboard = () => {
         },
     ];
 
-    // Columns for Confirmed Reservations (excludes Confirm button)
     const confirmedReservationsColumns = [
-        { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
-        { field: "email", headerName: "Email", flex: 1, minWidth: 150 },
-        { field: "phone", headerName: "Phone", flex: 1, minWidth: 120 },
-        {
-            field: "startDateTime",
-            headerName: "Start Date",
-            flex: 1,
-            minWidth: 150,
-        },
-        {
-            field: "endDateTime",
-            headerName: "End Date",
-            flex: 1,
-            minWidth: 150,
-        },
-        {
-            field: "totalPrice",
-            headerName: "Total Price (€)",
-            flex: 1,
-            minWidth: 120,
-        },
+        { field: "name", headerName: "Name", flex: 1 },
+        { field: "email", headerName: "Email", flex: 1 },
+        { field: "phone", headerName: "Phone", flex: 1 },
+        { field: "startDateTime", headerName: "Start Date", flex: 1 },
+        { field: "endDateTime", headerName: "End Date", flex: 1 },
+        { field: "totalPrice", headerName: "Total Price (€)", flex: 1 },
     ];
 
     const archivedReservationsColumns = [
-        { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
-        { field: "email", headerName: "Email", flex: 1, minWidth: 150 },
-        { field: "phone", headerName: "Phone", flex: 1, minWidth: 120 },
-        {
-            field: "startDateTime",
-            headerName: "Start Date",
-            flex: 1,
-            minWidth: 150,
-        },
-        {
-            field: "endDateTime",
-            headerName: "End Date",
-            flex: 1,
-            minWidth: 150,
-        },
-        {
-            field: "totalPrice",
-            headerName: "Total Price (€)",
-            flex: 1,
-            minWidth: 120,
-        },
+        { field: "name", headerName: "Name", flex: 1 },
+        { field: "email", headerName: "Email", flex: 1 },
+        { field: "phone", headerName: "Phone", flex: 1 },
+        { field: "startDateTime", headerName: "Start Date", flex: 1 },
+        { field: "endDateTime", headerName: "End Date", flex: 1 },
+        { field: "totalPrice", headerName: "Total Price (€)", flex: 1 },
     ];
 
     const items = [
@@ -355,7 +296,7 @@ const AdminDashboard = () => {
             key: "1",
             label: "Temporary Reservations",
             children: (
-                <div className="data-grid-container">
+                <div className="data-grid-container ag-theme-alpine">
                     <h2>Temporary Reservations</h2>
                     <div className="search-bar">
                         <input
@@ -365,28 +306,20 @@ const AdminDashboard = () => {
                             onChange={(e) => setSearchText(e.target.value)}
                         />
                     </div>
-                    <DataGrid
-                        rows={formattedTempReservations.filter((res) =>
+                    <AgGridReact
+                        rowData={formattedTempReservations.filter((res) =>
                             Object.values(res).some((value) =>
                                 String(value)
                                     .toLowerCase()
                                     .includes(searchText.toLowerCase())
                             )
                         )}
-                        columns={tempReservationsColumns}
-                        autoPageSize // Automatically adjust page size
-                        rowsPerPageOptions={[5, 10, 20]}
-                        getRowId={(row) => row._id}
-                        disableSelectionOnClick
-                        disableColumnReorder // Disable column reordering
-                        disableColumnResize // Disable column resizing
-                        sx={{
-                            height: "100%", // Use full height of the container
-                            width: "100%",
-                            "& .MuiDataGrid-cell": {
-                                fontSize: "0.875rem", // Smaller font size for mobile
-                            },
-                        }}
+                        columnDefs={tempReservationsColumns}
+                        domLayout="autoHeight"
+                        pagination={true}
+                        paginationPageSize={10}
+                        rowSelection="single"
+                        onRowClicked={(event) => console.log(event.data)}
                     />
                 </div>
             ),
@@ -395,7 +328,7 @@ const AdminDashboard = () => {
             key: "2",
             label: "Confirmed Reservations",
             children: (
-                <div className="data-grid-container">
+                <div className="data-grid-container ag-theme-alpine">
                     <h2>Confirmed Reservations</h2>
                     <div className="search-bar">
                         <input
@@ -405,25 +338,18 @@ const AdminDashboard = () => {
                             onChange={(e) => setSearchText(e.target.value)}
                         />
                     </div>
-                    <DataGrid
-                        rows={formattedConfirmedReservations.filter((res) =>
+                    <AgGridReact
+                        rowData={formattedConfirmedReservations.filter((res) =>
                             Object.values(res).some((value) =>
                                 String(value)
                                     .toLowerCase()
                                     .includes(searchText.toLowerCase())
                             )
                         )}
-                        columns={confirmedReservationsColumns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5, 10, 20]}
-                        getRowId={(row) => row._id}
-                        disableSelectionOnClick
-                        autoHeight
-                        sx={{
-                            "& .MuiDataGrid-cell": {
-                                fontSize: "0.875rem", // Smaller font size for mobile
-                            },
-                        }}
+                        columnDefs={confirmedReservationsColumns}
+                        domLayout="autoHeight"
+                        pagination={true}
+                        paginationPageSize={10}
                     />
                 </div>
             ),
@@ -432,7 +358,7 @@ const AdminDashboard = () => {
             key: "3",
             label: "Archived Reservations",
             children: (
-                <div className="data-grid-container">
+                <div className="data-grid-container ag-theme-alpine">
                     <h2>Archived Reservations</h2>
                     <div className="search-bar">
                         <input
@@ -442,25 +368,18 @@ const AdminDashboard = () => {
                             onChange={(e) => setSearchText(e.target.value)}
                         />
                     </div>
-                    <DataGrid
-                        rows={formattedArchivedReservations.filter((res) =>
+                    <AgGridReact
+                        rowData={formattedArchivedReservations.filter((res) =>
                             Object.values(res).some((value) =>
                                 String(value)
                                     .toLowerCase()
                                     .includes(searchText.toLowerCase())
                             )
                         )}
-                        columns={archivedReservationsColumns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5, 10, 20]}
-                        getRowId={(row) => row._id}
-                        disableSelectionOnClick
-                        autoHeight
-                        sx={{
-                            "& .MuiDataGrid-cell": {
-                                fontSize: "0.875rem", // Smaller font size for mobile
-                            },
-                        }}
+                        columnDefs={archivedReservationsColumns}
+                        domLayout="autoHeight"
+                        pagination={true}
+                        paginationPageSize={10}
                     />
                 </div>
             ),

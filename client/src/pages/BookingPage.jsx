@@ -204,6 +204,11 @@ function BookingPage() {
         window.scrollTo(0, 0);
 
         try {
+            // Check if startDateTime or endDateTime is N/A
+            if (!startDateTime || !endDateTime) {
+                throw new Error("Please select both start and end dates.");
+            }
+
             // Validate and sanitize inputs
             const sanitizedData = validateAndSanitizeInputs();
 
@@ -936,6 +941,7 @@ function BookingPage() {
                                         <button
                                             className="change-button"
                                             onClick={handleChangeButton}
+                                            type="button"
                                         >
                                             Change
                                         </button>

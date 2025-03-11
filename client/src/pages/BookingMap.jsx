@@ -118,6 +118,30 @@ const BookingMap = () => {
         navigate("/booking");
     };
 
+    // Handle start date change
+    const handleStartDateChange = (date) => {
+        const isoDate = date.toISOString();
+        setStartDateTime(isoDate);
+
+        // Reset end date if start date is after end date
+        if (endDateTime && dayjs(isoDate).isAfter(dayjs(endDateTime))) {
+            setEndDateTime(null);
+        }
+    };
+
+    // Handle end date change
+    const handleEndDateChange = (date) => {
+        const isoDate = date.toISOString();
+        setEndDateTime(isoDate);
+    };
+
+    // Disabled dates and times logic
+    const today = dayjs().startOf("day");
+    const oneYearFromToday = today.add(1, "year");
+
+    // Min time for start date: current time + 2 hours
+    const minStartTime = dayjs().add(2, "hour");
+
     return (
         <div className="campsite-map-container">
             <h2>Select a Campsite Area</h2>
@@ -131,16 +155,12 @@ const BookingMap = () => {
                                 value={
                                     startDateTime ? dayjs(startDateTime) : null
                                 }
-                                onChange={(date) => {
-                                    const isoDate = date.toISOString();
-                                    setStartDateTime(isoDate);
-                                }}
-                                minDate={dayjs().startOf("day")}
-                                maxDate={
-                                    endDateTime
-                                        ? dayjs(endDateTime).endOf("day")
-                                        : null
-                                }
+                                onChange={handleStartDateChange}
+                                minDate={today} // Min date: today
+                                maxDate={oneYearFromToday} // Max date: 1 year from today
+                                timeSteps={{ hour: 1, minutes: 0 }} // Restrict to hours only
+                                views={["year", "month", "day", "hours"]} // Show only hours in the time picker
+                                ampm={false} // Use 24-hour format
                             />
                         ) : (
                             <DateTimePicker
@@ -148,16 +168,12 @@ const BookingMap = () => {
                                 value={
                                     startDateTime ? dayjs(startDateTime) : null
                                 }
-                                onChange={(date) => {
-                                    const isoDate = date.toISOString();
-                                    setStartDateTime(isoDate);
-                                }}
-                                minDate={dayjs().startOf("day")}
-                                maxDate={
-                                    endDateTime
-                                        ? dayjs(endDateTime).endOf("day")
-                                        : null
-                                }
+                                onChange={handleStartDateChange}
+                                minDate={today} // Min date: today
+                                maxDate={oneYearFromToday} // Max date: 1 year from today
+                                timeSteps={{ hour: 1, minutes: 0 }} // Restrict to hours only
+                                views={["year", "month", "day", "hours"]} // Show only hours in the time picker
+                                ampm={false} // Use 24-hour format
                             />
                         )}
                     </label>
@@ -167,31 +183,31 @@ const BookingMap = () => {
                             <MobileDateTimePicker
                                 format={dateTimeFormat}
                                 value={endDateTime ? dayjs(endDateTime) : null}
-                                onChange={(date) => {
-                                    const isoDate = date.toISOString();
-                                    setEndDateTime(isoDate);
-                                }}
-                                minDate={dayjs().startOf("day")}
-                                maxDate={
+                                onChange={handleEndDateChange}
+                                minDate={
                                     startDateTime
-                                        ? dayjs(startDateTime).endOf("day")
-                                        : null
+                                        ? dayjs(startDateTime).add(1, "day") // Min date: start date + 1 day
+                                        : today
                                 }
+                                maxDate={oneYearFromToday} // Max date: 1 year from today
+                                timeSteps={{ hour: 1, minutes: 0 }} // Restrict to hours only
+                                views={["year", "month", "day", "hours"]} // Show only hours in the time picker
+                                ampm={false} // Use 24-hour format
                             />
                         ) : (
                             <DateTimePicker
                                 format={dateTimeFormat}
                                 value={endDateTime ? dayjs(endDateTime) : null}
-                                onChange={(date) => {
-                                    const isoDate = date.toISOString();
-                                    setEndDateTime(isoDate);
-                                }}
-                                minDate={dayjs().startOf("day")}
-                                maxDate={
+                                onChange={handleEndDateChange}
+                                minDate={
                                     startDateTime
-                                        ? dayjs(startDateTime).endOf("day")
-                                        : null
+                                        ? dayjs(startDateTime).add(1, "day") // Min date: start date + 1 day
+                                        : today
                                 }
+                                maxDate={oneYearFromToday} // Max date: 1 year from today
+                                timeSteps={{ hour: 1, minutes: 0 }} // Restrict to hours only
+                                views={["year", "month", "day", "hours"]} // Show only hours in the time picker
+                                ampm={false} // Use 24-hour format
                             />
                         )}
                     </label>
