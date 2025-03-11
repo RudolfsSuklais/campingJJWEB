@@ -5,8 +5,8 @@ import "./AdminDashboard.css";
 import { Tabs, Spin } from "antd";
 import toast from "react-hot-toast";
 import { AgGridReact } from "ag-grid-react";
-import { ClientSideRowModelModule } from "ag-grid-community"; // Import the required module
-import { ModuleRegistry } from "ag-grid-community"; // Import ModuleRegistry
+import { ClientSideRowModelModule } from "ag-grid-community";
+import { ModuleRegistry } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
@@ -17,9 +17,9 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
     const [tempReservations, setTempReservations] = useState([]);
     const [confirmedReservations, setConfirmedReservations] = useState([]);
-    const [searchText, setSearchText] = useState("");
     const [archivedReservations, setArchivedReservations] = useState([]);
     const [loadingReservations, setLoadingReservations] = useState({});
+    const [quickFilterText, setQuickFilterText] = useState(""); // For AG Grid's quick filter
 
     useEffect(() => {
         const fetchTemporaryReservations = async () => {
@@ -28,7 +28,6 @@ const AdminDashboard = () => {
                     `${import.meta.env.VITE_BACKEND_URL}/api/temp-reservations`
                 );
                 const data = await response.json();
-                console.log("Fetched temporary reservations:", data);
                 setTempReservations(data);
             } catch (error) {
                 console.error("Failed to fetch temporary reservations:", error);
@@ -43,7 +42,6 @@ const AdminDashboard = () => {
                     }/api/reservations-confirmed`
                 );
                 const data = await response.json();
-                console.log("Fetched confirmed reservations:", data);
                 setConfirmedReservations(data);
             } catch (error) {
                 console.error("Failed to fetch confirmed reservations:", error);
@@ -58,7 +56,6 @@ const AdminDashboard = () => {
                     }/api/archived-reservations`
                 );
                 const data = await response.json();
-                console.log("Fetched archived reservations:", data);
                 setArchivedReservations(data);
             } catch (error) {
                 console.error("Failed to fetch archived reservations:", error);
@@ -237,17 +234,22 @@ const AdminDashboard = () => {
     const formattedArchivedReservations =
         formatReservations(archivedReservations);
 
-    // AG Grid Column Definitions
     const tempReservationsColumns = [
-        { field: "name", headerName: "Name", flex: 1 },
-        { field: "email", headerName: "Email", flex: 1 },
-        { field: "phone", headerName: "Phone", flex: 1 },
-        { field: "startDateTime", headerName: "Start Date", flex: 1 },
-        { field: "endDateTime", headerName: "End Date", flex: 1 },
-        { field: "totalPrice", headerName: "Total Price (€)", flex: 1 },
+        { field: "name", headerName: "Name", minWidth: 50, maxWidth: 100 },
+        { field: "email", headerName: "Email", minWidth: 200 },
+        { field: "phone", headerName: "Phone", minWidth: 150 },
+        { field: "startDateTime", headerName: "Start Date", minWidth: 180 },
+        { field: "endDateTime", headerName: "End Date", minWidth: 180 },
+        {
+            field: "totalPrice",
+            headerName: "Total Price (€)",
+            minWidth: 50,
+            maxWidth: 100,
+        },
         {
             field: "actions",
             headerName: "Actions",
+            minWidth: 200, // Set enough space for buttons
             cellRenderer: (params) => {
                 const isLoading = loadingReservations[params.data._id] || false;
 
@@ -274,21 +276,31 @@ const AdminDashboard = () => {
     ];
 
     const confirmedReservationsColumns = [
-        { field: "name", headerName: "Name", flex: 1 },
-        { field: "email", headerName: "Email", flex: 1 },
-        { field: "phone", headerName: "Phone", flex: 1 },
-        { field: "startDateTime", headerName: "Start Date", flex: 1 },
-        { field: "endDateTime", headerName: "End Date", flex: 1 },
-        { field: "totalPrice", headerName: "Total Price (€)", flex: 1 },
+        { field: "name", headerName: "Name", minWidth: 50, maxWidth: 100 },
+        { field: "email", headerName: "Email" },
+        { field: "phone", headerName: "Phone" },
+        { field: "startDateTime", headerName: "Start Date" },
+        { field: "endDateTime", headerName: "End Date" },
+        {
+            field: "totalPrice",
+            headerName: "Total Price (€)",
+            minWidth: 50,
+            maxWidth: 150,
+        },
     ];
 
     const archivedReservationsColumns = [
-        { field: "name", headerName: "Name", flex: 1 },
-        { field: "email", headerName: "Email", flex: 1 },
-        { field: "phone", headerName: "Phone", flex: 1 },
-        { field: "startDateTime", headerName: "Start Date", flex: 1 },
-        { field: "endDateTime", headerName: "End Date", flex: 1 },
-        { field: "totalPrice", headerName: "Total Price (€)", flex: 1 },
+        { field: "name", headerName: "Name", minWidth: 50, maxWidth: 100 },
+        { field: "email", headerName: "Email" },
+        { field: "phone", headerName: "Phone" },
+        { field: "startDateTime", headerName: "Start Date" },
+        { field: "endDateTime", headerName: "End Date" },
+        {
+            field: "totalPrice",
+            headerName: "Total Price (€)",
+
+            maxWidth: 150,
+        },
     ];
 
     const items = [
@@ -302,24 +314,26 @@ const AdminDashboard = () => {
                         <input
                             type="text"
                             placeholder="Search..."
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
                         />
                     </div>
                     <AgGridReact
-                        rowData={formattedTempReservations.filter((res) =>
-                            Object.values(res).some((value) =>
-                                String(value)
-                                    .toLowerCase()
-                                    .includes(searchText.toLowerCase())
-                            )
-                        )}
+                        rowData={formattedTempReservations}
                         columnDefs={tempReservationsColumns}
+                        quickFilterText={quickFilterText} // Enable quick filter
                         domLayout="autoHeight"
                         pagination={true}
                         paginationPageSize={10}
-                        rowSelection="single"
-                        onRowClicked={(event) => console.log(event.data)}
+                        suppressHorizontalScroll={true} // Ensure horizontal scrolling
+                        defaultColDef={{
+                            sortable: true,
+                            filter: true,
+                            resizable: true,
+                            quickFilter: true,
+                            minWidth: 150, // Prevent columns from collapsing too much
+                        }}
+                        onGridReady={(params) => params.api.sizeColumnsToFit()} // Ensure columns are properly adjusted
                     />
                 </div>
             ),
@@ -334,22 +348,24 @@ const AdminDashboard = () => {
                         <input
                             type="text"
                             placeholder="Search..."
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
                         />
                     </div>
                     <AgGridReact
-                        rowData={formattedConfirmedReservations.filter((res) =>
-                            Object.values(res).some((value) =>
-                                String(value)
-                                    .toLowerCase()
-                                    .includes(searchText.toLowerCase())
-                            )
-                        )}
+                        rowData={formattedConfirmedReservations}
                         columnDefs={confirmedReservationsColumns}
+                        quickFilterText={quickFilterText} // Enable quick filter
                         domLayout="autoHeight"
                         pagination={true}
                         paginationPageSize={10}
+                        suppressHorizontalScroll={false} // Enable horizontal scroll
+                        defaultColDef={{
+                            sortable: true,
+                            filter: true,
+                            resizable: true,
+                            quickFilter: true,
+                        }}
                     />
                 </div>
             ),
@@ -364,22 +380,23 @@ const AdminDashboard = () => {
                         <input
                             type="text"
                             placeholder="Search..."
-                            value={searchText}
-                            onChange={(e) => setSearchText(e.target.value)}
+                            value={quickFilterText}
+                            onChange={(e) => setQuickFilterText(e.target.value)}
                         />
                     </div>
                     <AgGridReact
-                        rowData={formattedArchivedReservations.filter((res) =>
-                            Object.values(res).some((value) =>
-                                String(value)
-                                    .toLowerCase()
-                                    .includes(searchText.toLowerCase())
-                            )
-                        )}
+                        rowData={formattedArchivedReservations}
                         columnDefs={archivedReservationsColumns}
+                        quickFilterText={quickFilterText} // Enable quick filter
                         domLayout="autoHeight"
                         pagination={true}
                         paginationPageSize={10}
+                        suppressHorizontalScroll={false} // Enable horizontal scroll
+                        defaultColDef={{
+                            sortable: true,
+                            filter: true,
+                            resizable: true,
+                        }}
                     />
                 </div>
             ),
