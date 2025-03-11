@@ -3,14 +3,18 @@ import "./BookingMap.css";
 import campsiteImage from "../assets/jjweb-land.png";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { DatePicker } from "antd";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
+import { useMediaQuery } from "@mui/material";
 import toast from "react-hot-toast";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 dayjs.extend(customParseFormat);
 
-const MapSelect = () => {
+const BookingMap = () => {
     const dateTimeFormat = "DD/MM/YYYY HH:mm";
     const [areas, setAreas] = useState([]);
     const [selectedArea, setSelectedArea] = useState(null);
@@ -23,6 +27,7 @@ const MapSelect = () => {
     const [errorCooldown, setErrorCooldown] = useState(false);
 
     const navigate = useNavigate();
+    const isMobile = useMediaQuery("(max-width:600px)");
 
     // Fetch areas
     useEffect(() => {
@@ -117,54 +122,80 @@ const MapSelect = () => {
         <div className="campsite-map-container">
             <h2>Select a Campsite Area</h2>
             <div className="date-selection">
-                <label>
-                    Arrival Date and Time:
-                    <DatePicker
-                        format={dateTimeFormat}
-                        showTime={{ format: "HH", hourStep: 1 }}
-                        value={startDateTime ? dayjs(startDateTime) : null}
-                        onChange={(date, dateString) => {
-                            const isoDate = dayjs(
-                                dateString,
-                                dateTimeFormat
-                            ).toISOString();
-                            setStartDateTime(isoDate);
-                        }}
-                        disabledDate={(current) =>
-                            (current && current < dayjs().startOf("day")) ||
-                            (endDateTime &&
-                                current >= dayjs(endDateTime).endOf("day"))
-                        }
-                        allowClear={false}
-                        inputReadOnly={true} // Prevent keyboard from opening
-                        popupStyle={{ width: "90%", maxWidth: "300px" }} // Adjust size for mobile
-                    />
-                </label>
-                <label>
-                    Departure Date and Time:
-                    <DatePicker
-                        format={dateTimeFormat}
-                        showTime={{ format: "HH", hourStep: 1 }}
-                        value={endDateTime ? dayjs(endDateTime) : null}
-                        onChange={(date, dateString) => {
-                            const isoDate = dayjs(
-                                dateString,
-                                dateTimeFormat
-                            ).toISOString();
-                            setEndDateTime(isoDate);
-                        }}
-                        disabledDate={(current) =>
-                            (current && current < dayjs().startOf("day")) ||
-                            (current &&
-                                startDateTime &&
-                                current <= dayjs(startDateTime).endOf("day"))
-                        }
-                        allowClear={false}
-                        inputReadOnly={true} // Prevent keyboard from opening
-                        popupStyle={{ width: "90%", maxWidth: "300px" }} // Adjust size for mobile
-                        placement="bottomLeft" // Force the dropdown to open below the input
-                    />
-                </label>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <label>
+                        Arrival Date and Time:
+                        {isMobile ? (
+                            <MobileDateTimePicker
+                                format={dateTimeFormat}
+                                value={
+                                    startDateTime ? dayjs(startDateTime) : null
+                                }
+                                onChange={(date) => {
+                                    const isoDate = date.toISOString();
+                                    setStartDateTime(isoDate);
+                                }}
+                                minDate={dayjs().startOf("day")}
+                                maxDate={
+                                    endDateTime
+                                        ? dayjs(endDateTime).endOf("day")
+                                        : null
+                                }
+                            />
+                        ) : (
+                            <DateTimePicker
+                                format={dateTimeFormat}
+                                value={
+                                    startDateTime ? dayjs(startDateTime) : null
+                                }
+                                onChange={(date) => {
+                                    const isoDate = date.toISOString();
+                                    setStartDateTime(isoDate);
+                                }}
+                                minDate={dayjs().startOf("day")}
+                                maxDate={
+                                    endDateTime
+                                        ? dayjs(endDateTime).endOf("day")
+                                        : null
+                                }
+                            />
+                        )}
+                    </label>
+                    <label>
+                        Departure Date and Time:
+                        {isMobile ? (
+                            <MobileDateTimePicker
+                                format={dateTimeFormat}
+                                value={endDateTime ? dayjs(endDateTime) : null}
+                                onChange={(date) => {
+                                    const isoDate = date.toISOString();
+                                    setEndDateTime(isoDate);
+                                }}
+                                minDate={dayjs().startOf("day")}
+                                maxDate={
+                                    startDateTime
+                                        ? dayjs(startDateTime).endOf("day")
+                                        : null
+                                }
+                            />
+                        ) : (
+                            <DateTimePicker
+                                format={dateTimeFormat}
+                                value={endDateTime ? dayjs(endDateTime) : null}
+                                onChange={(date) => {
+                                    const isoDate = date.toISOString();
+                                    setEndDateTime(isoDate);
+                                }}
+                                minDate={dayjs().startOf("day")}
+                                maxDate={
+                                    startDateTime
+                                        ? dayjs(startDateTime).endOf("day")
+                                        : null
+                                }
+                            />
+                        )}
+                    </label>
+                </LocalizationProvider>
             </div>
             {loading && <p>Loading availability...</p>}
             {error && <p className="error">{error}</p>}
@@ -242,4 +273,4 @@ const MapSelect = () => {
     );
 };
 
-export default MapSelect;
+export default BookingMap;
