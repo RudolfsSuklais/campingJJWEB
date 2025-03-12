@@ -215,14 +215,7 @@ const BookingMap = () => {
             </div>
             {loading && <p>Loading availability...</p>}
             {error && <p className="error">{error}</p>}
-            <TransformWrapper
-                initialScale={1}
-                minScale={1}
-                maxScale={3}
-                wheel={{ step: 0.1 }}
-                doubleClick={{ disabled: true }}
-                pinch={{ step: 0.1 }}
-            >
+            <TransformWrapper>
                 <TransformComponent>
                     <div className="map-wrapper">
                         <img
