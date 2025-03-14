@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
 
@@ -9,7 +10,7 @@ export const AuthProvider = ({ children }) => {
         const checkAuth = async () => {
             try {
                 console.log("Checking admin authentication...");
-                const response = await fetch(
+                const response = axios.get(
                     `${import.meta.env.VITE_BACKEND_URL}/api/check-auth`,
                     {
                         credentials: "include",
