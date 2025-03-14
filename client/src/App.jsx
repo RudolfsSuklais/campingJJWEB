@@ -19,7 +19,7 @@ import AdminDashboard from "./pages/AdminDashboard.jsx";
 import { AccessProvider } from "./context/AccessContext.jsx";
 import ProtectedRoute from "./helpers/ProtectedRoute.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
-import { PrivateRoute } from "./helpers/PrivateRoute.jsx";
+import PrivateRoute from "./helpers/PrivateRoute.jsx";
 
 function App() {
     return (
