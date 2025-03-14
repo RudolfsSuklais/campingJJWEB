@@ -20,8 +20,31 @@ import { AccessProvider } from "./context/AccessContext.jsx";
 import ProtectedRoute from "./helpers/ProtectedRoute.jsx";
 
 function PrivateRoute({ children }) {
-    const isAdminLoggedIn = document.cookie.includes("adminToken"); // Check if the cookie is set
-    console.log("isAdminLoggedIn:", isAdminLoggedIn); // Log the result
+    const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const response = await fetch(
+                    `${import.meta.env.VITE_BACKEND_URL}/api/check-auth`,
+                    {
+                        credentials: "include", // Include cookies
+                    }
+                );
+                if (response.ok) {
+                    setIsAdminLoggedIn(true);
+                } else {
+                    setIsAdminLoggedIn(false);
+                }
+            } catch (error) {
+                console.error("Error checking login status:", error);
+                setIsAdminLoggedIn(false);
+            }
+        };
+
+        checkLoginStatus();
+    }, []);
+
     return isAdminLoggedIn ? children : <Navigate to="/admin/login" />;
 }
 

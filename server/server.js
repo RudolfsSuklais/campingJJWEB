@@ -293,8 +293,8 @@ app.post("/api/login", async (req, res) => {
     // Set token in an HTTP-only cookie
     res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
-        sameSite: "strict",
+        secure: true, // Required for HTTPS
+        sameSite: "none", // Allow cross-origin cookies
         maxAge: 3600000, // 1 hour
     });
 
@@ -303,14 +303,35 @@ app.post("/api/login", async (req, res) => {
 
 app.post("/api/logout", (req, res) => {
     // Clear the adminToken cookie
-    res.clearCookie("adminToken", {
+    res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Match the same settings as when the cookie was set
-        sameSite: "strict",
+        secure: true, // Required for HTTPS
+        sameSite: "none", // Allow cross-origin cookies
+        maxAge: 3600000, // 1 hour
     });
 
     // Send a success response
     res.status(200).json({ message: "Logout successful" });
+});
+
+app.get("/api/check-auth", async (req, res) => {
+    const token = req.cookies.adminToken;
+
+    if (!token) {
+        return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET || "efjfsf7sffifk2fkflflslfsekfsejfsif8f28ax"
+        );
+        return res
+            .status(200)
+            .json({ message: "Authenticated", user: decoded });
+    } catch (error) {
+        return res.status(401).json({ message: "Invalid token" });
+    }
 });
 
 app.delete("/api/delete-temp-reservation/:id", async (req, res) => {
