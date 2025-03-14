@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
                 const response = await fetch(
                     `${import.meta.env.VITE_BACKEND_URL}/api/check-auth`,
                     {
-                        credentials: "include", // Ensures cookies are sent
+                        credentials: "include",
                     }
                 );
                 const data = await response.json();

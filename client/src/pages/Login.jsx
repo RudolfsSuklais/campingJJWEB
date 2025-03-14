@@ -14,24 +14,25 @@ const LoginPage = () => {
                 `${import.meta.env.VITE_BACKEND_URL}/api/login`,
                 {
                     method: "POST",
-                    body: JSON.stringify({ username, password }),
-                    headers: { "Content-Type": "application/json" },
                     credentials: "include", // Include cookies
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, password }),
                 }
             );
+
             const data = await response.json();
-            console.log("Login Response:", data); // Log the response
+            console.log("Login response:", data);
 
             if (response.ok) {
-                console.log("Login successful, redirecting to dashboard");
-                navigate("/admin/dashboard"); // Redirect to admin dashboard
+                // Redirect or update state
+                window.location.href = "/admin/dashboard";
             } else {
-                console.log("Login failed:", data.message);
-                alert("Invalid credentials");
+                console.error("Login failed:", data.message);
             }
         } catch (error) {
             console.error("Login error:", error);
-            alert("An error occurred during login");
         }
     };
 

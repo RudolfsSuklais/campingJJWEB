@@ -273,34 +273,34 @@ app.get("/api/archived-reservations", async (req, res) => {
 
 app.post("/api/login", async (req, res) => {
     const { username, password } = req.body;
+    console.log("Login request:", { username, password });
 
     const user = await Users.findOne({ username });
-
     if (!user) {
+        console.log("User not found");
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
     if (!isPasswordCorrect) {
+        console.log("Incorrect password");
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate a token (ensure it's set correctly)
     const token = jwt.sign(
         { id: user._id, username: user.username },
-        process.env.JWT_SECRET || "efjfsf7sffifk2fkflflslfsekfsejfsif8f28ax",
+        process.env.JWT_SECRET || "your-secret-key",
         { expiresIn: "1h" }
     );
 
-    // Set token in an HTTP-only cookie
     res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
-        sameSite: "none", // Allow cross-origin cookies
-        maxAge: 3600000, // 1 hour
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        maxAge: 3600000,
     });
 
+    console.log("Login successful, token set");
     return res.status(200).json({ message: "Login successful" });
 });
 
@@ -320,6 +320,7 @@ app.post("/api/logout", (req, res) => {
 app.get("/api/check-auth", async (req, res) => {
     console.log("Check-auth endpoint called");
     const token = req.cookies.adminToken;
+    console.log("Token received:", token);
 
     if (!token) {
         console.log("No token found");
