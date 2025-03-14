@@ -27,7 +27,7 @@ const LoginPage = () => {
 
             if (response.ok) {
                 // Redirect or update state
-                window.location.href = "/admin/dashboard";
+                navigate("/admin/dashboard");
             } else {
                 console.error("Login failed:", data.message);
             }
