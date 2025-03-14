@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext.jsx"; // Import useAuth
 import "./Login.css"; // Import the custom CSS file
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const { login } = useAuth(); // Get the login function from AuthContext
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -26,8 +28,8 @@ const LoginPage = () => {
             console.log("Login response:", data);
 
             if (response.ok) {
-                // Redirect or update state
-                navigate("/admin/dashboard");
+                login(); // Update isAdminLoggedIn state
+                navigate("/admin/dashboard"); // Navigate to admin dashboard
             } else {
                 console.error("Login failed:", data.message);
             }

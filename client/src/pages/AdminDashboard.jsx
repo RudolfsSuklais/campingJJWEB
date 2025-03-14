@@ -218,17 +218,20 @@ const AdminDashboard = () => {
 
     const handleLogout = async () => {
         try {
-            // Clear the adminToken cookie
-            await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
-                method: "POST",
-                credentials: "include", // Include cookies in the request
-            });
+            const response = await fetch(
+                `${import.meta.env.VITE_BACKEND_URL}/api/logout`,
+                {
+                    method: "POST",
+                    credentials: "include", // Include cookies
+                }
+            );
 
-            // Redirect to the login page
-            navigate("/admin/login");
+            if (response.ok) {
+                logout(); // Update isAdminLoggedIn state
+                navigate("/admin/login"); // Navigate to login page
+            }
         } catch (error) {
-            console.error("Error during logout:", error);
-            toast.error("An error occurred during logout.");
+            console.error("Logout error:", error);
         }
     };
 

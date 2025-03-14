@@ -6,20 +6,29 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
+    // Function to handle login
+    const login = () => {
+        setIsAdminLoggedIn(true);
+    };
+
+    // Function to handle logout
+    const logout = () => {
+        setIsAdminLoggedIn(false);
+    };
+
     useEffect(() => {
         const checkAuth = async () => {
             try {
                 console.log("Checking admin authentication...");
-                const response = axios.get(
+                const response = await axios.get(
                     `${import.meta.env.VITE_BACKEND_URL}/api/check-auth`,
                     {
-                        credentials: "include",
+                        withCredentials: true, // Include cookies
                     }
                 );
-                const data = await response.json();
-                console.log("Check-auth response:", data);
+                console.log("Check-auth response:", response.data);
 
-                if (response.ok) {
+                if (response.status === 200) {
                     setIsAdminLoggedIn(true);
                 } else {
                     setIsAdminLoggedIn(false);
@@ -34,7 +43,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isAdminLoggedIn, setIsAdminLoggedIn }}>
+        <AuthContext.Provider value={{ isAdminLoggedIn, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

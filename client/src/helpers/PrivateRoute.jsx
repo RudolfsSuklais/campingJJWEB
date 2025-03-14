@@ -8,4 +8,4 @@ const PrivateRoute = ({ children }) => {
     return isAdminLoggedIn ? children : <Navigate to="/admin/login" />;
 };
 
-export default PrivateRoute; // Ensure default export
+export default PrivateRoute;
