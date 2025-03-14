@@ -294,7 +294,7 @@ app.post("/api/login", async (req, res) => {
 
     // Set token in an HTTP-only cookie
     res.cookie("adminToken", token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
         sameSite: "strict",
         maxAge: 3600000, // 1 hour
