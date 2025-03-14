@@ -16,10 +16,10 @@ import dayjs from "dayjs";
 import archivedReservation from "./models/archivedReservations.js"; // Your archive model
 import Users from "./models/userSchema.js";
 import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 // MongoDB connection
