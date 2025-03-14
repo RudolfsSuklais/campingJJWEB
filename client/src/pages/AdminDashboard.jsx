@@ -21,70 +21,56 @@ const AdminDashboard = () => {
     const [loadingReservations, setLoadingReservations] = useState({});
     const [quickFilterText, setQuickFilterText] = useState(""); // For AG Grid's quick filter
 
-    useEffect(() => {
-        const token = localStorage.getItem("adminToken");
-        if (!token) {
-            navigate("/admin/login");
-            return;
-        }
+    const fetchData = async () => {
+        try {
+            const [tempRes, confirmedRes, archivedRes] = await Promise.all([
+                fetch(
+                    `${import.meta.env.VITE_BACKEND_URL}/api/temp-reservations`,
+                    {
+                        credentials: "include",
+                    }
+                ),
+                fetch(
+                    `${
+                        import.meta.env.VITE_BACKEND_URL
+                    }/api/reservations-confirmed`,
+                    {
+                        credentials: "include",
+                    }
+                ),
+                fetch(
+                    `${
+                        import.meta.env.VITE_BACKEND_URL
+                    }/api/archived-reservations`,
+                    {
+                        credentials: "include",
+                    }
+                ),
+            ]);
 
-        const fetchData = async () => {
-            try {
-                const [tempRes, confirmedRes, archivedRes] = await Promise.all([
-                    fetch(
-                        `${
-                            import.meta.env.VITE_BACKEND_URL
-                        }/api/temp-reservations`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    ),
-                    fetch(
-                        `${
-                            import.meta.env.VITE_BACKEND_URL
-                        }/api/reservations-confirmed`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    ),
-                    fetch(
-                        `${
-                            import.meta.env.VITE_BACKEND_URL
-                        }/api/archived-reservations`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    ),
-                ]);
-
-                if (
-                    tempRes.status === 401 ||
-                    confirmedRes.status === 401 ||
-                    archivedRes.status === 401
-                ) {
-                    localStorage.removeItem("adminToken");
-                    navigate("/admin/login");
-                    return;
-                }
-
-                const tempData = await tempRes.json();
-                const confirmedData = await confirmedRes.json();
-                const archivedData = await archivedRes.json();
-
-                setTempReservations(tempData);
-                setConfirmedReservations(confirmedData);
-                setArchivedReservations(archivedData);
-            } catch (error) {
-                console.error("Failed to fetch reservations:", error);
+            if (
+                tempRes.status === 401 ||
+                confirmedRes.status === 401 ||
+                archivedRes.status === 401
+            ) {
+                navigate("/admin/login");
+                return;
             }
-        };
 
+            const tempData = await tempRes.json();
+            const confirmedData = await confirmedRes.json();
+            const archivedData = await archivedRes.json();
+
+            setTempReservations(tempData);
+            setConfirmedReservations(confirmedData);
+            setArchivedReservations(archivedData);
+        } catch (error) {
+            console.error("Failed to fetch reservations:", error);
+        }
+    };
+
+    // Run fetchData when component loads
+    useEffect(() => {
         fetchData();
     }, [navigate]);
 
@@ -230,9 +216,20 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("adminToken");
-        navigate("/admin/login");
+    const handleLogout = async () => {
+        try {
+            // Clear the adminToken cookie
+            await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logout`, {
+                method: "POST",
+                credentials: "include", // Include cookies in the request
+            });
+
+            // Redirect to the login page
+            navigate("/admin/login");
+        } catch (error) {
+            console.error("Error during logout:", error);
+            toast.error("An error occurred during logout.");
+        }
     };
 
     const formatDateForDisplay = (isoDate) => {

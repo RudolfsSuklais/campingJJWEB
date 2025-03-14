@@ -14,6 +14,8 @@ import ConfirmedReservation from "./models/confirmedReservations.js";
 import cron from "node-cron"; // Import node-cron
 import dayjs from "dayjs";
 import archivedReservation from "./models/archivedReservations.js"; // Your archive model
+import Users from "./models/userSchema.js";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -265,53 +267,53 @@ app.get("/api/archived-reservations", async (req, res) => {
 });
 
 // Backend: Set token in a secure cookie
-app.post("/api/login", (req, res) => {
+
+app.post("/api/login", async (req, res) => {
     const { username, password } = req.body;
 
-    const user = users.find(
-        (user) => user.username === username && user.password === password
-    );
+    const user = await Users.findOne({ username });
 
-    if (user) {
-        const token = jwt.sign({ username, role: "admin" }, "your_jwt_secret", {
-            expiresIn: "1h", // Token expires in 1 hour
-        });
-
-        // Set the token in a secure cookie
-        res.cookie("adminToken", token, {
-            httpOnly: true, // Prevents JavaScript access
-            secure: true, // Only send over HTTPS
-            sameSite: "strict", // Prevents CSRF attacks
-            maxAge: 3600000, // 1 hour expiry
-        });
-
-        return res.json({ message: "Login successful" });
-    } else {
+    if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
     }
+
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordCorrect) {
+        return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Generate a token (ensure it's set correctly)
+    const token = jwt.sign(
+        { id: user._id, username: user.username },
+        "your_jwt_secret",
+        {
+            expiresIn: "1h",
+        }
+    );
+
+    // Set token in an HTTP-only cookie
+    res.cookie("adminToken", token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
+        sameSite: "strict",
+        maxAge: 3600000, // 1 hour
+    });
+
+    return res.status(200).json({ message: "Login successful" });
 });
 
-const verifyAdmin = (req, res, next) => {
-    const token = req.cookies.adminToken; // Get the token from the cookie
-    if (!token) {
-        return res
-            .status(401)
-            .json({ message: "Access denied. No token provided." });
-    }
+app.post("/api/logout", (req, res) => {
+    // Clear the adminToken cookie
+    res.clearCookie("adminToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Match the same settings as when the cookie was set
+        sameSite: "strict",
+    });
 
-    try {
-        const decoded = jwt.verify(token, "your_jwt_secret");
-        if (decoded.role !== "admin") {
-            return res
-                .status(403)
-                .json({ message: "Access denied. Admin role required." });
-        }
-        req.user = decoded; // Attach the decoded user to the request object
-        next();
-    } catch (error) {
-        return res.status(401).json({ message: "Invalid or expired token." });
-    }
-};
+    // Send a success response
+    res.status(200).json({ message: "Logout successful" });
+});
 
 app.delete("/api/delete-temp-reservation/:id", async (req, res) => {
     try {

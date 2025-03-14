@@ -15,12 +15,13 @@ const LoginPage = () => {
                 method: "POST",
                 body: JSON.stringify({ username, password }),
                 headers: { "Content-Type": "application/json" },
+                credentials: "include", // Include cookies
             }
         );
         const data = await response.json();
+        console.log("Login Response:", data); // Log the response
 
-        if (data.token) {
-            localStorage.setItem("adminToken", data.token);
+        if (response.ok) {
             navigate("/admin/dashboard"); // Redirect to admin dashboard
         } else {
             alert("Invalid credentials");

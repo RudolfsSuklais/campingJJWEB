@@ -20,7 +20,8 @@ import { AccessProvider } from "./context/AccessContext.jsx";
 import ProtectedRoute from "./helpers/ProtectedRoute.jsx";
 
 function PrivateRoute({ children }) {
-    const isAdminLoggedIn = !!localStorage.getItem("adminToken");
+    const isAdminLoggedIn = document.cookie.includes("adminToken"); // Check if the cookie is set
+    console.log("isAdminLoggedIn:", isAdminLoggedIn); // Log the result
     return isAdminLoggedIn ? children : <Navigate to="/admin/login" />;
 }
 
