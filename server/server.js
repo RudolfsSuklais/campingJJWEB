@@ -286,10 +286,8 @@ app.post("/api/login", async (req, res) => {
     // Generate a token (ensure it's set correctly)
     const token = jwt.sign(
         { id: user._id, username: user.username },
-        "your_jwt_secret",
-        {
-            expiresIn: "1h",
-        }
+        process.env.JWT_SECRET || "efjfsf7sffifk2fkflflslfsekfsejfsif8f28ax",
+        { expiresIn: "1h" }
     );
 
     // Set token in an HTTP-only cookie
