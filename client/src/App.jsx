@@ -18,7 +18,7 @@ import LoginPage from "./pages/Login.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import { AccessProvider } from "./context/AccessContext.jsx";
 import ProtectedRoute from "./helpers/ProtectedRoute.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function PrivateRoute({ children }) {
     const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
