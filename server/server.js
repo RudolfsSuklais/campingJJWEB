@@ -20,8 +20,6 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-app.use(cookieParser());
-
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI;
 mongoose
@@ -54,6 +52,8 @@ app.use(express.json());
 
 // API routes
 app.use("/api", areaRoutes);
+
+app.use(cookieParser());
 
 // Serve static files from the React app's dist folder
 
