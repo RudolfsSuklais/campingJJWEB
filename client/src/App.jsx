@@ -50,6 +50,8 @@ function PrivateRoute({ children }) {
         checkLoginStatus();
     }, []);
 
+    console.log("isAdminLoggedIn:", isAdminLoggedIn); // Log the state
+
     return isAdminLoggedIn ? children : <Navigate to="/admin/login" />;
 }
 
