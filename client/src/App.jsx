@@ -18,99 +18,70 @@ import LoginPage from "./pages/Login.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import { AccessProvider } from "./context/AccessContext.jsx";
 import ProtectedRoute from "./helpers/ProtectedRoute.jsx";
-import { useState, useEffect } from "react";
-
-function PrivateRoute({ children }) {
-    const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-
-    useEffect(() => {
-        const checkLoginStatus = async () => {
-            try {
-                console.log("Checking login status...");
-                const response = await fetch(
-                    `${import.meta.env.VITE_BACKEND_URL}/api/check-auth`,
-                    {
-                        credentials: "include", // Include cookies
-                    }
-                );
-                console.log("Check-auth response:", response); // Log the response
-                if (response.ok) {
-                    console.log("User is authenticated");
-                    setIsAdminLoggedIn(true);
-                } else {
-                    console.log("User is not authenticated");
-                    setIsAdminLoggedIn(false);
-                }
-            } catch (error) {
-                console.error("Error checking login status:", error);
-                setIsAdminLoggedIn(false);
-            }
-        };
-
-        checkLoginStatus();
-    }, []);
-
-    console.log("isAdminLoggedIn:", isAdminLoggedIn); // Log the state
-
-    return isAdminLoggedIn ? children : <Navigate to="/admin/login" />;
-}
+import { AuthProvider } from "./context/AuthContext.jsx";
+import { PrivateRoute } from "./helpers/PrivateRoute.jsx";
 
 function App() {
     return (
         <BookingProvider>
             <AccessProvider>
-                <BrowserRouter>
-                    <ScrollToTop />
-                    <NavBar />
-                    <Toaster
-                        position="top-center"
-                        toastOptions={{ duration: 5000 }}
-                    />
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/admin/login" element={<LoginPage />} />
-                        <Route path="/pricing" element={<PricingPage />} />
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/contact" element={<Contact />} />
+                <AuthProvider>
+                    <BrowserRouter>
+                        <ScrollToTop />
+                        <NavBar />
+                        <Toaster
+                            position="top-center"
+                            toastOptions={{ duration: 5000 }}
+                        />
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route
+                                path="/admin/login"
+                                element={<LoginPage />}
+                            />
+                            <Route path="/pricing" element={<PricingPage />} />
+                            <Route path="/about" element={<AboutPage />} />
+                            <Route path="/contact" element={<Contact />} />
 
-                        {/* Protected Booking Routes */}
-                        <Route
-                            path="/booking-map"
-                            element={
-                                <ProtectedRoute>
-                                    <BookingMap />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/booking"
-                            element={
-                                <ProtectedRoute>
-                                    <Booking />
-                                </ProtectedRoute>
-                            }
-                        />
-                        <Route
-                            path="/booking-contact"
-                            element={
-                                <ProtectedRoute>
-                                    <BookingPage />
-                                </ProtectedRoute>
-                            }
-                        />
+                            {/* Protected Booking Routes */}
+                            <Route
+                                path="/booking-map"
+                                element={
+                                    <ProtectedRoute>
+                                        <BookingMap />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/booking"
+                                element={
+                                    <ProtectedRoute>
+                                        <Booking />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/booking-contact"
+                                element={
+                                    <ProtectedRoute>
+                                        <BookingPage />
+                                    </ProtectedRoute>
+                                }
+                            />
 
-                        <Route
-                            path="/admin/dashboard"
-                            element={
-                                <PrivateRoute>
-                                    <AdminDashboard />
-                                </PrivateRoute>
-                            }
-                        />
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
-                    <Footer />
-                </BrowserRouter>
+                            <Route
+                                path="/admin/dashboard"
+                                element={
+                                    <PrivateRoute>
+                                        <AdminDashboard />
+                                    </PrivateRoute>
+                                }
+                            />
+                            <Route path="*" element={<NotFound />} />
+                        </Routes>
+                        <Footer />
+                    </BrowserRouter>
+                </AuthProvider>
             </AccessProvider>
         </BookingProvider>
     );
