@@ -306,11 +306,10 @@ app.post("/api/login", async (req, res) => {
 
 app.post("/api/logout", (req, res) => {
     // Clear the adminToken cookie
-    res.cookie("adminToken", token, {
+    res.clearCookie("adminToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
         sameSite: "none", // Allow cross-origin cookies
-        maxAge: 3600000, // 1 hour
     });
 
     // Send a success response

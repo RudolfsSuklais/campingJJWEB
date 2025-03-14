@@ -277,14 +277,12 @@ const AdminDashboard = () => {
                     <>
                         <button
                             className="confirm-button"
-                            onClick={() => handleConfirm(params.data._id)}
-                        >
+                            onClick={() => handleConfirm(params.data._id)}>
                             Confirm
                         </button>
                         <button
                             className="decline-button"
-                            onClick={() => handleDecline(params.data._id)}
-                        >
+                            onClick={() => handleDecline(params.data._id)}>
                             Decline
                         </button>
                     </>
