@@ -19,6 +19,9 @@ import bcrypt from "bcrypt";
 
 dotenv.config();
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI;
 mongoose
@@ -46,7 +49,6 @@ app.use(
         credentials: true, // Allow cookies and credentials
     })
 );
-
 // Parse JSON requests
 app.use(express.json());
 
@@ -293,7 +295,7 @@ app.post("/api/login", async (req, res) => {
     // Set token in an HTTP-only cookie
     res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: true, // Required for HTTPS
+        secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
         sameSite: "none", // Allow cross-origin cookies
         maxAge: 3600000, // 1 hour
     });
@@ -305,7 +307,7 @@ app.post("/api/logout", (req, res) => {
     // Clear the adminToken cookie
     res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: true, // Required for HTTPS
+        secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
         sameSite: "none", // Allow cross-origin cookies
         maxAge: 3600000, // 1 hour
     });
@@ -324,7 +326,7 @@ app.get("/api/check-auth", async (req, res) => {
     try {
         const decoded = jwt.verify(
             token,
-            process.env.JWT_SECRET || "efjfsf7sffifk2fkflflslfsekfsejfsif8f28ax"
+            process.env.JWT_SECRET || "your-secret-key"
         );
         return res
             .status(200)
