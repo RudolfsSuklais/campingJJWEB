@@ -26,15 +26,19 @@ function PrivateRoute({ children }) {
     useEffect(() => {
         const checkLoginStatus = async () => {
             try {
+                console.log("Checking login status...");
                 const response = await fetch(
                     `${import.meta.env.VITE_BACKEND_URL}/api/check-auth`,
                     {
                         credentials: "include", // Include cookies
                     }
                 );
+                console.log("Check-auth response:", response); // Log the response
                 if (response.ok) {
+                    console.log("User is authenticated");
                     setIsAdminLoggedIn(true);
                 } else {
+                    console.log("User is not authenticated");
                     setIsAdminLoggedIn(false);
                 }
             } catch (error) {

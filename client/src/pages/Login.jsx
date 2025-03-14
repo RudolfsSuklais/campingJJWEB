@@ -9,22 +9,29 @@ const LoginPage = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/login`,
-            {
-                method: "POST",
-                body: JSON.stringify({ username, password }),
-                headers: { "Content-Type": "application/json" },
-                credentials: "include", // Include cookies
-            }
-        );
-        const data = await response.json();
-        console.log("Login Response:", data); // Log the response
+        try {
+            const response = await fetch(
+                `${import.meta.env.VITE_BACKEND_URL}/api/login`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ username, password }),
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include", // Include cookies
+                }
+            );
+            const data = await response.json();
+            console.log("Login Response:", data); // Log the response
 
-        if (response.ok) {
-            navigate("/admin/dashboard"); // Redirect to admin dashboard
-        } else {
-            alert("Invalid credentials");
+            if (response.ok) {
+                console.log("Login successful, redirecting to dashboard");
+                navigate("/admin/dashboard"); // Redirect to admin dashboard
+            } else {
+                console.log("Login failed:", data.message);
+                alert("Invalid credentials");
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            alert("An error occurred during login");
         }
     };
 

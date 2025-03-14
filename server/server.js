@@ -317,9 +317,11 @@ app.post("/api/logout", (req, res) => {
 });
 
 app.get("/api/check-auth", async (req, res) => {
+    console.log("Check-auth endpoint called");
     const token = req.cookies.adminToken;
 
     if (!token) {
+        console.log("No token found");
         return res.status(401).json({ message: "Not authenticated" });
     }
 
@@ -328,10 +330,12 @@ app.get("/api/check-auth", async (req, res) => {
             token,
             process.env.JWT_SECRET || "your-secret-key"
         );
+        console.log("Token verified:", decoded);
         return res
             .status(200)
             .json({ message: "Authenticated", user: decoded });
     } catch (error) {
+        console.error("Token verification failed:", error);
         return res.status(401).json({ message: "Invalid token" });
     }
 });
