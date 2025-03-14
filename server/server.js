@@ -295,9 +295,9 @@ app.post("/api/login", async (req, res) => {
 
     res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
-        maxAge: 3600000,
+        secure: process.env.NODE_ENV === "production", // true only in production for HTTPS
+        sameSite: "none", // Allow cross-origin cookies
+        maxAge: 3600000, // 1 hour
     });
 
     console.log("Login successful, token set");

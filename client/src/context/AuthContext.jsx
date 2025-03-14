@@ -6,12 +6,10 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
-    // Function to handle login
     const login = () => {
         setIsAdminLoggedIn(true);
     };
 
-    // Function to handle logout
     const logout = () => {
         setIsAdminLoggedIn(false);
     };
