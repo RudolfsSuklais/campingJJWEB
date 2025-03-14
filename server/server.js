@@ -188,10 +188,9 @@ app.get("/api/reservations-confirmed", async (req, res) => {
         });
     }
 });
-
 app.get("/api/temp-reservations", async (req, res) => {
     try {
-        const reservations = await TempReservation.find(); // Ensure no projection is excluding _id
+        const reservations = await TempReservation.find();
         res.status(200).json(reservations);
     } catch (error) {
         console.error("Error fetching temp reservations:", error);
@@ -265,6 +264,7 @@ app.get("/api/archived-reservations", async (req, res) => {
     }
 });
 
+// Backend: Set token in a secure cookie
 app.post("/api/login", (req, res) => {
     const { username, password } = req.body;
 
@@ -273,14 +273,45 @@ app.post("/api/login", (req, res) => {
     );
 
     if (user) {
-        const token = jwt.sign({ username }, "your_jwt_secret", {
-            expiresIn: "1h",
+        const token = jwt.sign({ username, role: "admin" }, "your_jwt_secret", {
+            expiresIn: "1h", // Token expires in 1 hour
         });
-        return res.json({ token });
+
+        // Set the token in a secure cookie
+        res.cookie("adminToken", token, {
+            httpOnly: true, // Prevents JavaScript access
+            secure: true, // Only send over HTTPS
+            sameSite: "strict", // Prevents CSRF attacks
+            maxAge: 3600000, // 1 hour expiry
+        });
+
+        return res.json({ message: "Login successful" });
     } else {
         return res.status(401).json({ message: "Invalid credentials" });
     }
 });
+
+const verifyAdmin = (req, res, next) => {
+    const token = req.cookies.adminToken; // Get the token from the cookie
+    if (!token) {
+        return res
+            .status(401)
+            .json({ message: "Access denied. No token provided." });
+    }
+
+    try {
+        const decoded = jwt.verify(token, "your_jwt_secret");
+        if (decoded.role !== "admin") {
+            return res
+                .status(403)
+                .json({ message: "Access denied. Admin role required." });
+        }
+        req.user = decoded; // Attach the decoded user to the request object
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: "Invalid or expired token." });
+    }
+};
 
 app.delete("/api/delete-temp-reservation/:id", async (req, res) => {
     try {
