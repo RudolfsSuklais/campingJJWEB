@@ -9,6 +9,7 @@ import { ClientSideRowModelModule } from "ag-grid-community";
 import { ModuleRegistry } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import { useAuth } from "../context/AuthContext.jsx";
 
 // Register the required modules
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
@@ -20,6 +21,7 @@ const AdminDashboard = () => {
     const [archivedReservations, setArchivedReservations] = useState([]);
     const [loadingReservations, setLoadingReservations] = useState({});
     const [quickFilterText, setQuickFilterText] = useState(""); // For AG Grid's quick filter
+    const { logout } = useAuth();
 
     const fetchData = async () => {
         try {
@@ -227,7 +229,7 @@ const AdminDashboard = () => {
             );
 
             if (response.ok) {
-                logout(); // Update isAdminLoggedIn state
+                logout(); // Call the logout function from AuthContext
                 navigate("/admin/login"); // Navigate to login page
             }
         } catch (error) {
