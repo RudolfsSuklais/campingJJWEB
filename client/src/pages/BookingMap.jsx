@@ -15,7 +15,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 dayjs.extend(customParseFormat);
 
 const BookingMap = () => {
-    const dateTimeFormat = "DD/MM/YYYY HH:mm";
+    const dateTimeFormat = "DD/MM/YYYY HH";
     const [areas, setAreas] = useState([]);
     const [selectedArea, setSelectedArea] = useState(null);
     const [startDateTime, setStartDateTime] = useState(
@@ -100,21 +100,55 @@ const BookingMap = () => {
         });
     };
 
+    // Validate dates
+    const validateDates = () => {
+        const today = dayjs();
+        const oneYearFromToday = today.add(1, "year");
+
+        if (!startDateTime || !endDateTime) {
+            toast.error("Please select both start and end dates.");
+            return false;
+        }
+
+        const start = dayjs(startDateTime);
+        const end = dayjs(endDateTime);
+
+        if (start.isBefore(today)) {
+            toast.error("Start date cannot be in the past.");
+            return false;
+        }
+
+        if (end.isBefore(start)) {
+            toast.error("End date cannot be before the start date.");
+            return false;
+        }
+
+        if (start.isAfter(oneYearFromToday)) {
+            toast.error("Start date cannot be more than 1 year in the future.");
+            return false;
+        }
+
+        if (end.isAfter(oneYearFromToday)) {
+            toast.error("End date cannot be more than 1 year in the future.");
+            return false;
+        }
+
+        return true;
+    };
+
     // Handle area click
     const handleAreaClick = (areaId) => {
-        if (!startDateTime || !endDateTime) {
-            if (!errorCooldown) {
-                toast.error("Please select a start and end date and time.");
-                setIsError(true);
-                setErrorCooldown(true);
-                setTimeout(() => setErrorCooldown(false), 5000);
-            }
+        if (!validateDates()) {
             return;
         }
+
         if (!isAreaAvailable(areaId)) {
-            alert("This area is not available for the selected date and time.");
+            toast.error(
+                "This area is not available for the selected date and time."
+            );
             return;
         }
+
         setSelectedArea(areaId);
         localStorage.setItem("selectedArea", areaId);
         localStorage.setItem("startDateTime", startDateTime);

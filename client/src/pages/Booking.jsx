@@ -8,24 +8,28 @@ import PricingTable from "../components/PricingTable";
 function PricingPage() {
     const { isAdults, setIsAdults } = useBooking();
     const [totalPrice, setTotalPrice] = useState(
-        localStorage.getItem("totalPrice") || 0
+        Number(localStorage.getItem("totalPrice")) || 0
     );
-    const [adults, setAdults] = useState(localStorage.getItem("adults") || 0);
+    const [adults, setAdults] = useState(
+        Number(localStorage.getItem("adults")) || 0
+    );
     const [children, setChildren] = useState(
-        localStorage.getItem("children") || 0
+        Number(localStorage.getItem("children")) || 0
     );
-    const [tents, setTents] = useState(localStorage.getItem("tents") || 0);
+    const [tents, setTents] = useState(
+        Number(localStorage.getItem("tents")) || 0
+    );
     const [camperVans, setCamperVans] = useState(
-        localStorage.getItem("camperVans") || 0
+        Number(localStorage.getItem("camperVans")) || 0
     );
     const [carsInTeritory, setCarsInTeritory] = useState(
-        localStorage.getItem("carsInTeritory") || 0
+        Number(localStorage.getItem("carsInTeritory")) || 0
     );
     const [additionalFirewood, setAdditionalFirewood] = useState(
-        localStorage.getItem("additionalFirewood") || 0
+        Number(localStorage.getItem("additionalFirewood")) || 0
     );
     const [carTrailer, setCarTrailer] = useState(
-        localStorage.getItem("carTrailer") || 0
+        Number(localStorage.getItem("carTrailer")) || 0
     );
     const [isElectricityChecked, setIsElectricityChecked] = useState(
         localStorage.getItem("electricity") === "true"
@@ -52,12 +56,9 @@ function PricingPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setTotalPeople(adults + children);
-        if (totalPeople >= 29) {
-            setIsPlusButtonDisabled(true);
-        } else {
-            setIsPlusButtonDisabled(false);
-        }
+        const newTotalPeople = Number(adults) + Number(children);
+        setTotalPeople(newTotalPeople);
+        setIsPlusButtonDisabled(newTotalPeople >= 29);
     }, [adults, children]);
 
     useEffect(() => {
@@ -200,7 +201,7 @@ function PricingPage() {
         });
     };
 
-    const handleSubmit = (e, setIsBooking) => {
+    const handleSubmit = (e) => {
         if (adults === 0) {
             toast.error("Please select at least 1 adult");
             return;
@@ -237,13 +238,11 @@ function PricingPage() {
                                     <button
                                         className={
                                             isPlusButtonDisabled
-                                                ? "plus-button-disabled "
+                                                ? "plus-button-disabled"
                                                 : ""
                                         }
                                         onClick={() => updatePrice("adults", 1)}
-                                        disabled={
-                                            isPlusButtonDisabled ? true : false
-                                        }>
+                                        disabled={isPlusButtonDisabled}>
                                         +
                                     </button>
                                 </div>
@@ -264,17 +263,15 @@ function PricingPage() {
                                     </button>
                                     <p>{children}</p>
                                     <button
+                                        className={
+                                            isPlusButtonDisabled
+                                                ? "plus-button-disabled"
+                                                : ""
+                                        }
                                         onClick={() =>
                                             updatePrice("children", 1)
                                         }
-                                        disabled={
-                                            isPlusButtonDisabled ? true : false
-                                        }
-                                        className={
-                                            isPlusButtonDisabled
-                                                ? "plus-button-disabled "
-                                                : ""
-                                        }>
+                                        disabled={isPlusButtonDisabled}>
                                         +
                                     </button>
                                 </div>

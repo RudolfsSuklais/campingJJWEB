@@ -284,18 +284,35 @@ body {
 
 @media (max-width: 768px) {
     .home-page-video-section {
-        height: 70vh;
-        padding: 2rem 1rem;
+        height: auto; /* Let the height adjust based on content */
+        padding: 4rem 1rem;
     }
 
     .home-page-video-section h1 {
         font-size: 2rem;
+        text-align: center; /* Center the heading */
+        margin-bottom: 1rem; /* Add some spacing */
+    }
+
+    .home-page-video {
+        width: 100%; /* Ensure the container takes full width */
+        height: 50vh; /* Set a fixed height for the video container */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Prevent video overflow */
     }
 
     .home-page-video video {
-        height: auto;
+        width: 100%; /* Make the video take full width of the container */
+        height: 100%; /* Make the video take full height of the container */
+        object-fit: cover; /* Ensure the video covers the entire space */
+    }
 
-        width: 100%;
+    .video-description {
+        text-align: center; /* Center the description */
+        margin-top: 1rem; /* Add some spacing */
+        padding: 0 1rem; /* Add padding for better readability */
     }
 }
 @media (max-width: 768px) {
