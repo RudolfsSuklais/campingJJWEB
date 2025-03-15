@@ -18,8 +18,12 @@ const BookingMap = () => {
     const dateTimeFormat = "DD/MM/YYYY HH:mm";
     const [areas, setAreas] = useState([]);
     const [selectedArea, setSelectedArea] = useState(null);
-    const [startDateTime, setStartDateTime] = useState(null);
-    const [endDateTime, setEndDateTime] = useState(null);
+    const [startDateTime, setStartDateTime] = useState(
+        localStorage.getItem("startDateTime") || null
+    );
+    const [endDateTime, setEndDateTime] = useState(
+        localStorage.getItem("endDateTime") || null
+    );
     const [confirmedReservations, setConfirmedReservations] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -226,8 +230,7 @@ const BookingMap = () => {
                         <svg
                             className="map-overlay"
                             viewBox="0 0 1764 1080"
-                            preserveAspectRatio="xMidYMid meet"
-                        >
+                            preserveAspectRatio="xMidYMid meet">
                             {areas.map((area, index) => {
                                 const points = area.coords
                                     .split(/[ ,]/)
@@ -267,8 +270,7 @@ const BookingMap = () => {
                                             y={centroidY}
                                             className="area-number"
                                             textAnchor="middle"
-                                            dominantBaseline="middle"
-                                        >
+                                            dominantBaseline="middle">
                                             {index + 1}
                                         </text>
                                     </g>

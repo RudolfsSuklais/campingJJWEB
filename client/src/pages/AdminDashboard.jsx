@@ -263,6 +263,7 @@ const AdminDashboard = () => {
         { field: "phone", headerName: "Phone", minWidth: 150 },
         { field: "startDateTime", headerName: "Start Date", minWidth: 180 },
         { field: "endDateTime", headerName: "End Date", minWidth: 180 },
+        { field: "selectedArea", headerName: "Area", minWidth: 180 },
         {
             field: "totalPrice",
             headerName: "Total Price (€)",
@@ -302,6 +303,7 @@ const AdminDashboard = () => {
         { field: "phone", headerName: "Phone" },
         { field: "startDateTime", headerName: "Start Date" },
         { field: "endDateTime", headerName: "End Date" },
+        { field: "selectedArea", headerName: "Area" },
         {
             field: "totalPrice",
             headerName: "Total Price (€)",
@@ -316,6 +318,7 @@ const AdminDashboard = () => {
         { field: "phone", headerName: "Phone" },
         { field: "startDateTime", headerName: "Start Date" },
         { field: "endDateTime", headerName: "End Date" },
+        { field: "selectedArea", headerName: "Area" },
         {
             field: "totalPrice",
             headerName: "Total Price (€)",
@@ -346,7 +349,7 @@ const AdminDashboard = () => {
                         domLayout="autoHeight"
                         pagination={true}
                         paginationPageSize={10}
-                        suppressHorizontalScroll={true} // Ensure horizontal scrolling
+                        suppressHorizontalScroll={false} // Ensure horizontal scrolling
                         defaultColDef={{
                             sortable: true,
                             filter: true,

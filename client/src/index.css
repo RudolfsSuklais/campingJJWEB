@@ -292,8 +292,10 @@ body {
         font-size: 2rem;
     }
 
-    .home-page-video {
-        max-width: 100%;
+    .home-page-video video {
+        height: auto;
+
+        width: 100%;
     }
 }
 @media (max-width: 768px) {

@@ -257,18 +257,6 @@ function BookingPage() {
     };
 
     const handleChangeDatesAreaButton = () => {
-        localStorage.clear();
-        setStartDateTime(null);
-        setEndDateTime(null);
-        setAdults(0);
-        setChildren(0);
-        setTents(0);
-        setCamperVans(0);
-        setCarsInTeritory(0);
-        setAdditionalFirewood(0);
-        setElectricity(false);
-        setOutdoorShower(false);
-        setSelectedArea(null);
         navigate("/booking-map");
     };
 
@@ -328,8 +316,7 @@ function BookingPage() {
                                                 className="change-dates-area-btn"
                                                 onClick={
                                                     handleChangeDatesAreaButton
-                                                }
-                                            >
+                                                }>
                                                 Change dates or area
                                             </button>
                                         </div>
@@ -841,8 +828,7 @@ function BookingPage() {
                                                 placeholder=" "
                                                 value={formData.message}
                                                 onChange={handleChange}
-                                                maxLength={500}
-                                            ></textarea>
+                                                maxLength={500}></textarea>
                                             <span className="floating-placeholder-textarea">
                                                 Message
                                             </span>
@@ -941,8 +927,7 @@ function BookingPage() {
                                         <button
                                             className="change-button"
                                             onClick={handleChangeButton}
-                                            type="button"
-                                        >
+                                            type="button">
                                             Change
                                         </button>
                                     </div>

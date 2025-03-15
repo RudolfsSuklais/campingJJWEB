@@ -157,3 +157,8 @@
 .selectedAreaText {
     font-size: 20px;
 }
+
+.plus-button-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

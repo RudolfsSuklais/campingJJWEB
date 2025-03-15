@@ -36,6 +36,9 @@ function PricingPage() {
 
     const [selectedArea, setSelectedArea] = useState(null);
 
+    const [totalPeople, setTotalPeople] = useState(0);
+    const [isPlusButtonDisabled, setIsPlusButtonDisabled] = useState(false);
+
     const ADULT_PRICE = 7;
     const CHILD_PRICE = 4;
     const TENT_PRICE = 3;
@@ -47,6 +50,15 @@ function PricingPage() {
     const OUTDOOR_SHOWER_PRICE = 2;
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setTotalPeople(adults + children);
+        if (totalPeople >= 29) {
+            setIsPlusButtonDisabled(true);
+        } else {
+            setIsPlusButtonDisabled(false);
+        }
+    }, [adults, children]);
 
     useEffect(() => {
         setIsAdults(2);
@@ -218,14 +230,20 @@ function PricingPage() {
                                         onClick={() =>
                                             adults > 0 &&
                                             updatePrice("adults", -1)
-                                        }
-                                    >
+                                        }>
                                         -
                                     </button>
                                     <p>{adults}</p>
                                     <button
+                                        className={
+                                            isPlusButtonDisabled
+                                                ? "plus-button-disabled "
+                                                : ""
+                                        }
                                         onClick={() => updatePrice("adults", 1)}
-                                    >
+                                        disabled={
+                                            isPlusButtonDisabled ? true : false
+                                        }>
                                         +
                                     </button>
                                 </div>
@@ -241,8 +259,7 @@ function PricingPage() {
                                         onClick={() =>
                                             children > 0 &&
                                             updatePrice("children", -1)
-                                        }
-                                    >
+                                        }>
                                         -
                                     </button>
                                     <p>{children}</p>
@@ -250,7 +267,14 @@ function PricingPage() {
                                         onClick={() =>
                                             updatePrice("children", 1)
                                         }
-                                    >
+                                        disabled={
+                                            isPlusButtonDisabled ? true : false
+                                        }
+                                        className={
+                                            isPlusButtonDisabled
+                                                ? "plus-button-disabled "
+                                                : ""
+                                        }>
                                         +
                                     </button>
                                 </div>
@@ -266,14 +290,12 @@ function PricingPage() {
                                         onClick={() =>
                                             tents > 0 &&
                                             updatePrice("tents", -1)
-                                        }
-                                    >
+                                        }>
                                         -
                                     </button>
                                     <p>{tents}</p>
                                     <button
-                                        onClick={() => updatePrice("tents", 1)}
-                                    >
+                                        onClick={() => updatePrice("tents", 1)}>
                                         +
                                     </button>
                                 </div>
@@ -289,16 +311,14 @@ function PricingPage() {
                                         onClick={() =>
                                             carsInTeritory > 0 &&
                                             updatePrice("carsInTeritory", -1)
-                                        }
-                                    >
+                                        }>
                                         -
                                     </button>
                                     <p>{carsInTeritory}</p>
                                     <button
                                         onClick={() =>
                                             updatePrice("carsInTeritory", 1)
-                                        }
-                                    >
+                                        }>
                                         +
                                     </button>
                                 </div>
@@ -314,16 +334,14 @@ function PricingPage() {
                                         onClick={() =>
                                             camperVans > 0 &&
                                             updatePrice("camperVans", -1)
-                                        }
-                                    >
+                                        }>
                                         -
                                     </button>
                                     <p>{camperVans}</p>
                                     <button
                                         onClick={() =>
                                             updatePrice("camperVans", 1)
-                                        }
-                                    >
+                                        }>
                                         +
                                     </button>
                                 </div>
@@ -339,16 +357,14 @@ function PricingPage() {
                                         onClick={() =>
                                             carTrailer > 0 &&
                                             updatePrice("carTrailer", -1)
-                                        }
-                                    >
+                                        }>
                                         -
                                     </button>
                                     <p>{carTrailer}</p>
                                     <button
                                         onClick={() =>
                                             updatePrice("carTrailer", 1)
-                                        }
-                                    >
+                                        }>
                                         +
                                     </button>
                                 </div>
@@ -395,16 +411,14 @@ function PricingPage() {
                                                 "additionalFirewood",
                                                 -1
                                             )
-                                        }
-                                    >
+                                        }>
                                         -
                                     </button>
                                     <p>{additionalFirewood}</p>
                                     <button
                                         onClick={() =>
                                             updatePrice("additionalFirewood", 1)
-                                        }
-                                    >
+                                        }>
                                         +
                                     </button>
                                 </div>
